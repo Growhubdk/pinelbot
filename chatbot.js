@@ -1,6 +1,14 @@
 const inputField = document.getElementById('user-input');
 const messagesDiv = document.getElementById('messages');
 
+function addMessage(sender, text) {
+  const msg = document.createElement('div');
+  msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
+  msg.innerHTML = text;
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
 window.onload = () => {
   addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Spørg mig om AI, automatisering, eller test hvor klar din virksomhed er til AI. Hvad vil du gerne vide?');
 };
@@ -12,7 +20,6 @@ inputField.addEventListener('keypress', async (e) => {
     inputField.value = '';
     addMessage('user', userText);
 
-    // Kontrollér testflow og blokér GPT hvis aktiv
     if (typeof handleBotLogic === 'function') {
       const blocked = handleBotLogic(userText);
       if (blocked === true) {
