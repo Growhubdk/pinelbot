@@ -1,10 +1,12 @@
-document.getElementById('user-input').addEventListener('keypress', async (e) => {
+const inputField = document.getElementById('user-input');
+const messagesDiv = document.getElementById('messages');
+
+inputField.addEventListener('keypress', async (e) => {
   if (e.key === 'Enter') {
-    const inputField = e.target;
     const userText = inputField.value.trim();
     if (!userText) return;
     inputField.value = '';
-    addMessage('Du', userText);
+    addMessage('user', userText);
 
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -13,13 +15,15 @@ document.getElementById('user-input').addEventListener('keypress', async (e) => 
     });
 
     const data = await response.json();
-    addMessage('PinelBot', data.reply);
+    addMessage('bot', data.reply);
     handleBotLogic(userText);
   }
 });
 
 function addMessage(sender, text) {
-  const messagesDiv = document.getElementById('messages');
-  messagesDiv.innerHTML += `<div><strong>${sender}:</strong> ${text}</div>`;
+  const msg = document.createElement('div');
+  msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
+  msg.innerHTML = text;
+  messagesDiv.appendChild(msg);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }

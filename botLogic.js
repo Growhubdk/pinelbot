@@ -7,7 +7,7 @@ function handleBotLogic(userInput) {
   if (!offeredTest && messageCount >= 3) {
     offeredTest = true;
     setTimeout(() => {
-      addMessage('PinelBot', 'Hvis du vil, kan jeg stille dig et par hurtige spørgsmål og give dig en idé om, hvor AI-parat din virksomhed er. Skal vi prøve? Skriv "ja" eller "nej".');
+      addMessage('bot', 'Vil du tage en hurtig AI-paratheds-test? Skriv "ja" eller "nej".');
     }, 1000);
   }
 
@@ -31,7 +31,7 @@ function startAIAssessment() {
 
   const askNext = () => {
     if (qIndex < questions.length) {
-      addMessage('PinelBot', questions[qIndex]);
+      addMessage('bot', questions[qIndex]);
       waitForAnswer().then(answer => {
         answers.push(answer);
         qIndex++;
@@ -52,7 +52,7 @@ function waitForAnswer() {
         const input = e.target.value.trim();
         if (!input) return;
         e.target.value = '';
-        addMessage('Du', input);
+        addMessage('user', input);
         document.getElementById('user-input').removeEventListener('keypress', handler);
         resolve(input);
       }
@@ -73,5 +73,5 @@ function summarizeAssessment(answers) {
     summary = "Der er måske lidt vej endnu – men vi kan sagtens tage en snak om, hvor det giver mening at starte.";
   }
 
-  addMessage('PinelBot', summary + ' Du er altid velkommen til at sende en besked via kontaktformularen 👉 <a href="https://pinel.dk/kontakt" target="_blank">Kontakt mig her</a>.');
+  addMessage('bot', summary + ' 👉 <a href="https://pinel.dk/kontakt" target="_blank">Kontakt mig her</a>.');
 }
