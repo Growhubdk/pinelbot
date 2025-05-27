@@ -1,0 +1,19 @@
+#chatbox {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-family: sans-serif;
+  background: #fff;
+}
+#messages {
+  height: 300px;
+  overflow-y: scroll;
+  margin-bottom: 10px;
+}
+#user-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
