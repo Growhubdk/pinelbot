@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Kun POST tilladt' });
@@ -25,9 +26,8 @@ Din opgave er at svare klart, kort og personligt. Brug højst 2–3 punkter og t
 Afslut dine svar med en opfordring som:
 – “Vil du have et eksempel?”
 – “Giver det mening i din virksomhed?”
-– “Er der en konkret opgave, du gerne ville slippe for?”
+– “Er der en konkret opgave, du gerne ville slippe for at bruge tid på?”
 `;
-
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {

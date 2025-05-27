@@ -1,7 +1,12 @@
+
 let messageCount = 0;
 let offeredTest = false;
+let inTestMode = false;
+let awaitingEmail = false;
 
 function handleBotLogic(userInput) {
+  if (inTestMode || awaitingEmail) return;
+
   messageCount++;
 
   if (!offeredTest && messageCount >= 3) {
@@ -21,6 +26,7 @@ function handleBotLogic(userInput) {
 }
 
 function startAIAssessment() {
+  inTestMode = true;
   const questions = [
     "Har I allerede brugt AI i jeres virksomhed – bare lidt?",
     "Har I manuelle opgaver, der er gentagende og frustrerende?",
@@ -62,6 +68,7 @@ function waitForAnswer() {
 }
 
 function summarizeAssessment(answers) {
+  inTestMode = false;
   const score = answers.filter(a => a.toLowerCase().includes('ja')).length;
   let summary = "";
 
@@ -74,4 +81,35 @@ function summarizeAssessment(answers) {
   }
 
   addMessage('bot', summary + ' 👉 <a href="https://pinel.dk/kontakt" target="_blank">Kontakt mig her</a>.');
+  setTimeout(() => {
+    addMessage('bot', "Vil du have resultatet og et par forslag sendt til din mail? Skriv din e-mailadresse her:");
+    awaitingEmail = true;
+    waitForAnswer().then(email => {
+      if (email.includes('@') && email.includes('.')) {
+        addMessage('bot', "Tak – jeg sender dig en opsummering snarest. Du hører fra mig på kontakt@pinel.dk.");
+        sendEmailToFormspree(email);
+      } else {
+        addMessage('bot', "Hmm, det ser ikke ud som en gyldig e-mail. Prøv igen?");
+        awaitingEmail = false;
+      }
+    });
+  }, 1500);
+}
+
+function sendEmailToFormspree(email) {
+  fetch("https://formspree.io/f/xdkgqnyw", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: email })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Netværksfejl");
+    awaitingEmail = false;
+  })
+  .catch(() => {
+    addMessage('bot', "Noget gik galt med at sende e-mailen. Du kan også skrive direkte til kontakt@pinel.dk.");
+    awaitingEmail = false;
+  });
 }
