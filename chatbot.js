@@ -12,6 +12,15 @@ inputField.addEventListener('keypress', async (e) => {
     inputField.value = '';
     addMessage('user', userText);
 
+    // Kontrollér testflow og blokér GPT hvis aktiv
+    if (typeof handleBotLogic === 'function') {
+      const blocked = handleBotLogic(userText);
+      if (blocked === true) {
+        console.log("GPT-blokeret: testmode aktiv eller email afventes");
+        return;
+      }
+    }
+
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,14 +29,5 @@ inputField.addEventListener('keypress', async (e) => {
 
     const data = await response.json();
     addMessage('bot', data.reply);
-    handleBotLogic(userText);
   }
 });
-
-function addMessage(sender, text) {
-  const msg = document.createElement('div');
-  msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
-  msg.innerHTML = text;
-  messagesDiv.appendChild(msg);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}

@@ -5,6 +5,7 @@ let inTestMode = false;
 let awaitingEmail = false;
 
 function handleBotLogic(userInput) {
+  if (inTestMode || awaitingEmail) return true;
   if (inTestMode || awaitingEmail) return;
 
   messageCount++;
@@ -18,10 +19,12 @@ function handleBotLogic(userInput) {
 
   if (userInput.toLowerCase().includes('test') || userInput.toLowerCase().includes('parathed')) {
     startAIAssessment();
+    return true;
   }
 
   if (userInput.toLowerCase() === 'ja') {
     startAIAssessment();
+    return true;
   }
 }
 
