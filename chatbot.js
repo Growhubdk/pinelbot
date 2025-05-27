@@ -1,18 +1,25 @@
 document.getElementById('user-input').addEventListener('keypress', async (e) => {
   if (e.key === 'Enter') {
     const inputField = e.target;
-    const userText = inputField.value;
+    const userText = inputField.value.trim();
+    if (!userText) return;
     inputField.value = '';
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.innerHTML += `<div><strong>Du:</strong> ${userText}</div>`;
+    addMessage('Du', userText);
 
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: userText })
     });
+
     const data = await response.json();
-    messagesDiv.innerHTML += `<div><strong>PinelBot:</strong> ${data.reply}</div>`;
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    addMessage('PinelBot', data.reply);
+    handleBotLogic(userText);
   }
 });
+
+function addMessage(sender, text) {
+  const messagesDiv = document.getElementById('messages');
+  messagesDiv.innerHTML += `<div><strong>${sender}:</strong> ${text}</div>`;
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
