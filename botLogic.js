@@ -9,6 +9,13 @@ function handleBotLogic(userInput) {
   if (inTestMode || awaitingEmail) return;
 
   messageCount++;
+if (userInput.toLowerCase().includes('er jeg klar')) {
+    setTimeout(() => {
+      addMessage('bot', 'Vil du tage en hurtig AI-paratheds-test og få et forslag? Skriv "ja" eller "nej".');
+    }, 1000);
+    offeredTest = true;
+    return true;
+  }
 
   if (!offeredTest && messageCount >= 3) {
     offeredTest = true;
