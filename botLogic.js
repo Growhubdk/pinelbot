@@ -4,11 +4,14 @@ let testProgress = 0;
 function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
-  // Start AI-paratheds-test
-  if (conversationState === "idle" && (input === "ja tak" || input.includes("ai-paratheds-test"))) {
+  // Triggere for usikkerhed eller tvivl → Start test
+  const triggerTest = ["ved ikke", "tvivl", "usikker", "hvordan kommer", "hvordan starter", "er vi klar"];
+  const wantsTest = triggerTest.some(trigger => input.includes(trigger));
+
+  if (conversationState === "idle" && wantsTest && testProgress === 0) {
     conversationState = "test_started";
     testProgress = 1;
-    addMessage('bot', "Lad os tage AI-paratheds-testen ✅\n\n👉 Har I allerede brugt AI i jeres virksomhed – bare lidt?\n(Svar 'ja' eller 'nej')");
+    addMessage('bot', "Lad os tage AI-paratheds-testen ✅\n👉 Har I allerede brugt AI i jeres virksomhed – bare lidt? (Svar 'ja' eller 'nej')");
     return true;
   }
 
@@ -16,7 +19,7 @@ function handleBotLogic(userInput) {
     if (testProgress === 1) {
       if (input === "ja" || input === "nej") {
         testProgress = 2;
-        addMessage('bot', "👉 Har I nogle arbejdsgange, der gentager sig og kunne være automatiseret?\n(Svar 'ja' eller 'nej')");
+        addMessage('bot', "👉 Har I nogle arbejdsgange, der gentager sig og kunne være automatiseret? (Svar 'ja' eller 'nej')");
         return true;
       } else {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
@@ -27,7 +30,7 @@ function handleBotLogic(userInput) {
     if (testProgress === 2) {
       if (input === "ja" || input === "nej") {
         testProgress = 3;
-        addMessage('bot', "👉 Er I åbne for at afprøve nye digitale værktøjer?\n(Svar 'ja' eller 'nej')");
+        addMessage('bot', "👉 Er I åbne for at afprøve nye digitale værktøjer? (Svar 'ja' eller 'nej')");
         return true;
       } else {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
@@ -48,5 +51,5 @@ function handleBotLogic(userInput) {
     }
   }
 
-  return false; // Falder tilbage til GPT
+  return false; // falder tilbage til GPT hvis ikke fanget
 }
