@@ -1,8 +1,7 @@
 const inputField = document.getElementById('user-input');
-const sendButton = document.getElementById('send-button');
 const messagesDiv = document.getElementById('messages');
+const sendButton = document.getElementById('send-button');
 
-// Tilføj bruger- eller bot-besked
 function addMessage(sender, text) {
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
@@ -11,25 +10,37 @@ function addMessage(sender, text) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Initial bot-besked
+function showTypingIndicator() {
+  const typing = document.createElement('div');
+  typing.className = 'bubble bot-bubble typing';
+  typing.id = 'typing-indicator';
+  typing.innerText = 'PinelBot skriver...';
+  messagesDiv.appendChild(typing);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  const typing = document.getElementById('typing-indicator');
+  if (typing) typing.remove();
+}
+
 window.onload = () => {
   addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Spørg mig om AI, automatisering, eller test hvor klar din virksomhed er til AI. Hvad vil du gerne vide?');
 };
 
-// Send besked-funktion
-async function sendMessage() {
+async function handleUserInput() {
   const userText = inputField.value.trim();
   if (!userText) return;
   inputField.value = '';
   addMessage('user', userText);
 
+  // Intercept with logic
   if (typeof handleBotLogic === 'function') {
-    const blocked = handleBotLogic(userText);
-    if (blocked === true) {
-      console.log("GPT-blokeret: testmode aktiv eller email afventes");
-      return;
-    }
+    const handled = handleBotLogic(userText);
+    if (handled) return;
   }
+
+  showTypingIndicator();
 
   try {
     const response = await fetch('/api/chat', {
@@ -39,17 +50,18 @@ async function sendMessage() {
     });
 
     const data = await response.json();
+    removeTypingIndicator();
     addMessage('bot', data.reply);
   } catch (error) {
-    console.error('Fejl ved hentning af svar:', error);
-    addMessage('bot', 'Beklager, der opstod en fejl. Prøv igen senere.');
+    removeTypingIndicator();
+    addMessage('bot', "Beklager, noget gik galt. Prøv igen senere.");
   }
 }
 
-// Trigger send med Enter
 inputField.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
+  if (e.key === 'Enter') handleUserInput();
 });
 
-// Trigger send med klik
-sendButton.addEventListener('click', sendMessage);
+sendButton.addEventListener('click', () => {
+  handleUserInput();
+});
