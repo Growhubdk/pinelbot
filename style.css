@@ -84,3 +84,53 @@ body {
   height: 20px;
   fill: white;
 }
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.option-button {
+  background-color: #1e8b64;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.option-button:hover {
+  background-color: #166c4d;
+}
+
+.topic-button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.topic-button:hover {
+  background-color: #ddd;
+}
+
+.reset-button {
+  background-color: #eee;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.reset-button:hover {
+  background-color: #ddd;
+}
