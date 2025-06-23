@@ -6,7 +6,7 @@ function handleBotLogic(userInput) {
 
   // === Triggere AI-paratheds-test ===
   const testTriggers = [
-    "ai-paratheds-test", "ai test", "klarhedstjek", "klar til ai", "ja tak", "vi er klar"
+    "ai-paratheds-test", "ai test", "klarhedstjek", "klar til ai", "vi er klar"
   ];
   const wantsTestDirect = testTriggers.some(trigger => input.includes(trigger));
 
@@ -58,6 +58,13 @@ function handleBotLogic(userInput) {
         return true;
       }
     }
+  }
+
+  // === Brugeren siger "ja tak" efter test ===
+  if (conversationState === "idle" && input === "ja tak") {
+    addMessage('bot', "Fedt! Her er et forslag: Start med én konkret opgave – fx fakturahåndtering eller kundemails – og lad os automatisere den med AI. Skal jeg vise dig, hvordan det kunne fungere i praksis?");
+    if (typeof addContactButton === 'function') addContactButton();
+    return true;
   }
 
   // === Kontaktlink ved brugerens initiativ ===
