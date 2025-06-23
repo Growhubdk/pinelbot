@@ -4,18 +4,25 @@ let testProgress = 0;
 function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
-  // Start AI-paratheds-test ved tvivl
-  const triggerTest = ["ved ikke", "tvivl", "usikker", "hvordan kommer", "hvordan starter", "er vi klar"];
-  const wantsTest = triggerTest.some(trigger => input.includes(trigger));
+  // === Triggere AI-paratheds-test ===
+  const testTriggers = [
+    "ai-paratheds-test", "ai test", "klarhedstjek", "klar til ai", "ja tak", "vi er klar"
+  ];
+  const wantsTestDirect = testTriggers.some(trigger => input.includes(trigger));
 
-  if (conversationState === "idle" && wantsTest && testProgress === 0) {
+  const testFallbackTriggers = [
+    "ved ikke", "tvivl", "usikker", "hvordan kommer", "hvordan starter", "er vi klar"
+  ];
+  const wantsTestByTvivl = testFallbackTriggers.some(trigger => input.includes(trigger));
+
+  if ((conversationState === "idle") && (wantsTestDirect || wantsTestByTvivl) && testProgress === 0) {
     conversationState = "test_started";
     testProgress = 1;
     addMessage('bot', "Lad os tage AI-paratheds-testen ✅\n👉 Har I allerede brugt AI i jeres virksomhed – bare lidt? (Svar 'ja' eller 'nej')");
     return true;
   }
 
-  // Fortsæt AI-paratheds-testen
+  // === Fortsæt AI-paratheds-test ===
   if (conversationState === "test_started") {
     if (testProgress === 1) {
       if (input === "ja" || input === "nej") {
@@ -44,6 +51,7 @@ function handleBotLogic(userInput) {
         conversationState = "idle";
         testProgress = 0;
         addMessage('bot', "Tak for dine svar 🙌 Det giver et rigtig godt billede af, hvor I står. Vil du have et konkret forslag baseret på dine svar?");
+        if (typeof addContactButton === 'function') addContactButton();
         return true;
       } else {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
@@ -52,7 +60,7 @@ function handleBotLogic(userInput) {
     }
   }
 
-  // Brugeren beder selv om kontakt
+  // === Kontaktlink ved brugerens initiativ ===
   const contactTriggers = [
     "kontakt", "skrive til dig", "snakke med dig", "komme i kontakt", "jeg vil gerne snakke", "hvordan kontakter jeg"
   ];
@@ -60,10 +68,11 @@ function handleBotLogic(userInput) {
 
   if (wantsContact) {
     addMessage('bot', `Selvfølgelig 😊 Du er altid velkommen til at kontakte Carsten direkte via kontaktformularen her: <a href="https://pinel.dk/kontakt" target="_blank">https://pinel.dk/kontakt</a>`);
+    if (typeof addContactButton === 'function') addContactButton();
     return true;
   }
 
-  // Hvis brugeren virker usikker → foreslå kontakt
+  // === Kontaktforslag ved usikkerhed ===
   if (
     input.includes("ved ikke") ||
     input.includes("hjælp") ||
@@ -72,6 +81,7 @@ function handleBotLogic(userInput) {
     input.includes("hvordan starter man")
   ) {
     addMessage('bot', `Det er helt okay at være i tvivl 😊 Måske det er nemmere at tage en snak direkte. Du kan kontakte Carsten her: <a href="https://pinel.dk/kontakt" target="_blank">https://pinel.dk/kontakt</a>`);
+    if (typeof addContactButton === 'function') addContactButton();
     return true;
   }
 
