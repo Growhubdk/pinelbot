@@ -51,8 +51,10 @@ function showTopicButtons() {
   const topics = [
     { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
     { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
-    { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' }
+    { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
+    { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' } // 👈 Tilføj denne linje
   ];
+
 
   const wrapper = document.createElement('div');
   wrapper.id = 'topic-buttons';
