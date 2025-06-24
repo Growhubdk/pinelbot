@@ -228,15 +228,15 @@ const flows = {
       switch (this.progress) {
         case 0:
   if (input === "ja" || input === "ja tak") {
-    if (this.state.awaiting) return;
-    this.state.awaiting = true;
-    this.progress = 1;
-    setTimeout(() => {
-      this.state.awaiting = false;
-      this.handle("");
-    }, 100);
-    break;
-  }
+  if (this.state.awaiting) return;
+  this.state.awaiting = true;
+  this.progress = 1;
+  setTimeout(() => {
+    this.state.awaiting = false;
+    this.handle("");
+  }, 100);
+  return; // 👈 VIGTIG: Forhindrer at flowet fortsætter til resten af case 0
+}
 
   addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
   showOptions([
