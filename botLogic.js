@@ -236,12 +236,11 @@ const flows = {
   });
 },
     reset() {
-      this.progress = 0;
-      this.state = {};
-      this.answers = {};
-      this.handle("");
-      persistFlowState(this);
-    },
+  this.progress = 0;
+  this.state = {};
+  this.answers = {};
+  persistFlowState(this);
+},
     handle(input) {
       switch (this.progress) {
         case 0:
