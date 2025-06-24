@@ -214,9 +214,26 @@ const flows = {
     progress: 0,
     state: {},
     answers: {},
+
     start() {
   this.reset();
-  this.state.awaiting = false; // Reset af ventetilstand ved start
+  this.state.awaiting = false;
+  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+  showOptions([
+    { label: "✅ Ja tak", value: "ja" },
+    { label: "🔙 Nej, ikke lige nu", value: "nej" }
+  ], (val) => {
+    if (val === "ja") {
+      if (this.state.awaiting) return;
+      this.state.awaiting = true;
+      this.progress = 1;
+      setTimeout(() => handleNextStep(this), 100);
+    } else {
+      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+      clearFlowState();
+      showTopicButtons();
+    }
+  });
 },
     reset() {
       this.progress = 0;
@@ -259,32 +276,54 @@ setTimeout(() => handleNextStep(this), 100);
   break;
 
         case 1:
-          addMessage('bot', "Hvad hedder du?");
-          waitForUserInput((name) => {
-            this.answers.name = name;
-            this.progress = 2;
-            persistFlowState(this);
-            this.handle("");
-          });
-          break;
+  addMessage('bot', "Hvad hedder du?");
+  waitForUserInput((name) => {
+    if (!name || name.trim().length < 2) {
+      addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
+      this.handle("");
+      return;
+    }
+
+    this.answers.name = name.trim();
+    this.progress = 2;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
+
         case 2:
-          addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
-          waitForUserInput((email) => {
-            this.answers.email = email;
-            this.progress = 3;
-            persistFlowState(this);
-            this.handle("");
-          });
-          break;
+  addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+  waitForUserInput((email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
+      this.handle(""); // prøv igen
+      return;
+    }
+
+    this.answers.email = email;
+    this.progress = 3;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
+
         case 3:
-          addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
-          waitForUserInput((msg) => {
-            this.answers.message = msg;
-            this.progress = 4;
-            persistFlowState(this);
-            this.handle("");
-          });
-          break;
+  addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+  waitForUserInput((msg) => {
+    if (!msg || msg.trim().length < 10) {
+      addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
+      this.handle("");
+      return;
+    }
+
+    this.answers.message = msg.trim();
+    this.progress = 4;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
+
         case 4:
           fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
             method: "POST",
