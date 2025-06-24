@@ -300,11 +300,13 @@ function loadFlowState() {
       activeFlow = saved.name;
       addMessage('bot', `📌 Du havde et flow i gang sidst: *${saved.name}*.\nVil du fortsætte, hvor du slap?`);
       showResumeButtons();
+      scrollToBottom(); // 👈 Tilføj denne linje
     }
   } catch (e) {
     console.error("Kunne ikke loade gemt flow:", e);
   }
 }
+
 
 function clearFlowState() {
   localStorage.removeItem("activeFlow");

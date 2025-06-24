@@ -1,3 +1,4 @@
+// --- chatbot.js ---
 const inputField = document.getElementById('user-input');
 const messagesDiv = document.getElementById('messages');
 const sendButton = document.getElementById('send-button');
@@ -102,8 +103,12 @@ async function handleSimulatedUserInput(text) {
 }
 
 window.onload = () => {
-  addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Hvad vil du gerne vide mere om?');
-  showTopicButtons();
+  if (typeof loadFlowState === 'function') {
+    loadFlowState();
+  } else {
+    addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Hvad vil du gerne vide mere om?');
+    showTopicButtons();
+  }
 };
 
 async function handleUserInput() {
