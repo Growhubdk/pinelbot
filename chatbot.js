@@ -105,11 +105,18 @@ async function handleSimulatedUserInput(text) {
 window.onload = () => {
   if (typeof loadFlowState === 'function') {
     loadFlowState();
-  } else {
+  }
+
+  // Hvis der ikke findes gemt flow, vis standard velkomst
+  const raw = localStorage.getItem("activeFlow");
+  if (!raw) {
     addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Hvad vil du gerne vide mere om?');
     showTopicButtons();
+    scrollToBottom(); // Sikrer korrekt visning
   }
 };
+
+
 
 async function handleUserInput() {
   const userText = inputField.value.trim();
