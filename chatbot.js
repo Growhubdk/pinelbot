@@ -8,8 +8,8 @@ let topicChosen = false;
 let awaitingUserInputCallback = null;
 
 function waitForUserInput(callback) {
+  console.log("Bot venter på brugerinput...");
   awaitingUserInputCallback = callback;
-  // Deaktiver input under vent
   inputField.disabled = true;
   sendButton.disabled = true;
   inputField.placeholder = "Vent venligst på spørgsmålet...";
@@ -17,16 +17,17 @@ function waitForUserInput(callback) {
 
 function onUserInput(text) {
   if (awaitingUserInputCallback) {
+    console.log("Modtager brugerinput:", text);
     const cb = awaitingUserInputCallback;
     awaitingUserInputCallback = null;
-    // Aktiver input igen
+    // Genaktiver input
     inputField.disabled = false;
     sendButton.disabled = false;
     inputField.placeholder = "Skriv din besked her...";
     cb(text);
-    return true; // Input håndteres som svar
+    return true; // signalerer at input blev håndteret som svar
   }
-  return false; // Input håndteres normalt
+  return false;
 }
 
 function addMessage(sender, text) {

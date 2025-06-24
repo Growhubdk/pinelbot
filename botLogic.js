@@ -276,50 +276,51 @@ const flows = {
         break;
 
       case 1:
-        addMessage('bot', "Hvad hedder du?");
-        waitForUserInput((name) => {
-          if (!name || name.trim().length < 2) {
-            addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
-            this.handle(""); // gentag spørgsmålet
-            return;
-          }
-          this.answers.name = name.trim();
-          this.progress = 2;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
+  addMessage('bot', "Hvad hedder du?");
+  waitForUserInput((name) => {
+    console.log("Navn modtaget i callback:", name);
+    if (!name || name.trim().length < 2) {
+      addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
+      this.handle(""); // gentag spørgsmålet
+      return;
+    }
+    this.answers.name = name.trim();
+    this.progress = 2;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
 
       case 2:
-        addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
-        waitForUserInput((email) => {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(email)) {
-            addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
-            this.handle(""); // gentag spørgsmålet
-            return;
-          }
-          this.answers.email = email.trim();
-          this.progress = 3;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
+  addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+  waitForUserInput((email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
+      this.handle("");
+      return;
+    }
+    this.answers.email = email.trim();
+    this.progress = 3;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
 
-      case 3:
-        addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
-        waitForUserInput((msg) => {
-          if (!msg || msg.trim().length < 10) {
-            addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
-            this.handle(""); // gentag spørgsmålet
-            return;
-          }
-          this.answers.message = msg.trim();
-          this.progress = 4;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
+case 3:
+  addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+  waitForUserInput((msg) => {
+    if (!msg || msg.trim().length < 10) {
+      addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
+      this.handle("");
+      return;
+    }
+    this.answers.message = msg.trim();
+    this.progress = 4;
+    persistFlowState(this);
+    this.handle("");
+  });
+  break;
 
       case 4:
         fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
