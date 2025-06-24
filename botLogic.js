@@ -208,36 +208,69 @@ const flows = {
     }
   },
 
-  contact: {
-    name: "contact",
-    state: "idle",
+  kontakt: {
+    name: "kontakt",
     progress: 0,
-    triggers: ["kontakt", "snakke", "skrive", "komme i kontakt"],
-    start() {
-      this.state = "started";
-      this.progress = 1;
-      addMessage('bot', "📞 Vil du helst blive ringet op eller skrive en mail? (svar: 'ringe' eller 'mail')");
+    state: {},
+    answers: {},
+    reset() {
+      this.progress = 0;
+      this.state = {};
+      this.answers = {};
+      this.handle("");
       persistFlowState(this);
     },
     handle(input) {
-      const lower = input.toLowerCase();
-      if (lower.includes("ringe")) {
-        addMessage('bot', "📱 Du kan blive ringet op via kontaktformularen her: <a href='https://pinel.dk/kontakt' target='_blank'>pinel.dk/kontakt</a>");
-      } else if (lower.includes("mail")) {
-        addMessage('bot', "✉️ Du kan skrive direkte her: <a href='https://pinel.dk/kontakt' target='_blank'>pinel.dk/kontakt</a>");
-      } else {
-        addMessage('bot', "Skriv gerne 'ringe' eller 'mail' 🙂");
-        return true;
+      switch (this.progress) {
+        case 0:
+          addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+          showOptions([
+            { label: "✅ Ja tak", value: "ja" },
+            { label: "🔙 Nej, ikke lige nu", value: "nej" }
+          ], (val) => {
+            if (val === "ja") {
+              this.progress = 1;
+              this.handle("");
+            } else {
+              addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+              clearFlowState();
+              showTopicButtons();
+            }
+          });
+          break;
+        case 1:
+          addMessage('bot', "Hvad hedder du?");
+          waitForUserInput((name) => {
+            this.answers.name = name;
+            this.progress = 2;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 2:
+          addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+          waitForUserInput((email) => {
+            this.answers.email = email;
+            this.progress = 3;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 3:
+          addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+          waitForUserInput((msg) => {
+            this.answers.message = msg;
+            this.progress = 4;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 4:
+          addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+          clearFlowState();
+          showTopicButtons();
+          break;
       }
-      if (typeof addContactButton === 'function') addContactButton();
-      this.reset();
-      return true;
-    },
-    reset() {
-      this.state = "idle";
-      this.progress = 0;
-      activeFlow = null;
-      clearFlowState();
     }
   }
 };
@@ -252,7 +285,7 @@ function handleBotLogic(userInput) {
 
   for (const key in flows) {
     const flow = flows[key];
-    if (flow.triggers.some(trigger => input.includes(trigger))) {
+    if (flow.triggers && flow.triggers.some(trigger => input.includes(trigger))) {
       activeFlow = flow.name;
       flow.start();
       return true;
@@ -300,13 +333,12 @@ function loadFlowState() {
       activeFlow = saved.name;
       addMessage('bot', `📌 Du havde et flow i gang sidst: *${saved.name}*.\nVil du fortsætte, hvor du slap?`);
       showResumeButtons();
-      scrollToBottom(); // 👈 Tilføj denne linje
+      scrollToBottom();
     }
   } catch (e) {
     console.error("Kunne ikke loade gemt flow:", e);
   }
 }
-
 
 function clearFlowState() {
   localStorage.removeItem("activeFlow");
