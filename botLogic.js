@@ -209,138 +209,137 @@ const flows = {
   },
 
   kontakt: {
-    name: "kontakt",
-    triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring"],
-    progress: 0,
-    state: {},
-    answers: {},
+  name: "kontakt",
+  triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring"],
+  progress: 0,
+  state: {},
+  answers: {},
 
-    start() {
-  this.reset();
-  this.state.awaiting = false;
-  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-  showOptions([
-    { label: "✅ Ja tak", value: "ja" },
-    { label: "🔙 Nej, ikke lige nu", value: "nej" }
-  ], (val) => {
-    if (val === "ja") {
-      if (this.state.awaiting) return;
-      this.state.awaiting = true;
-      this.progress = 1;
-      setTimeout(() => handleNextStep(this), 100);
-    } else {
-      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
-      clearFlowState();
-      showTopicButtons();
-    }
-  });
-},
-    reset() {
-  this.progress = 0;
-  this.state = {};
-  this.answers = {};
-  persistFlowState(this);
-},
-    handle(input) {
-      switch (this.progress) {
-        case 0:
-  if (input === "ja" || input === "ja tak") {
-  if (this.state.awaiting) return;
-  this.state.awaiting = true;
-this.progress = 1;
-setTimeout(() => handleNextStep(this), 100);
-
-  return; // 👈 VIGTIG: Forhindrer at flowet fortsætter til resten af case 0
-}
-
-  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-  showOptions([
-    { label: "✅ Ja tak", value: "ja" },
-    { label: "🔙 Nej, ikke lige nu", value: "nej" }
-  ], (val) => {
-    if (val === "ja") {
-      if (this.state.awaiting) return;
-      this.state.awaiting = true;
-      this.progress = 1;
-      setTimeout(() => {
-        this.state.awaiting = false;
-        this.handle("");
-      }, 100);
-    } else {
-      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
-      clearFlowState();
-      showTopicButtons();
-    }
-  });
-  break;
-
-        case 1:
-  addMessage('bot', "Hvad hedder du?");
-  waitForUserInput((name) => {
-    if (!name || name.trim().length < 2) {
-      addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
-      this.handle("");
-      return;
-    }
-
-    this.answers.name = name.trim();
-    this.progress = 2;
-    persistFlowState(this);
-    this.handle("");
-  });
-  break;
-
-        case 2:
-  addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
-  waitForUserInput((email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
-      this.handle(""); // prøv igen
-      return;
-    }
-
-    this.answers.email = email;
-    this.progress = 3;
-    persistFlowState(this);
-    this.handle("");
-  });
-  break;
-
-        case 3:
-  addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
-  waitForUserInput((msg) => {
-    if (!msg || msg.trim().length < 10) {
-      addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
-      this.handle("");
-      return;
-    }
-
-    this.answers.message = msg.trim();
-    this.progress = 4;
-    persistFlowState(this);
-    this.handle("");
-  });
-  break;
-
-        case 4:
-          fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: this.answers.name,
-              email: this.answers.email,
-              message: this.answers.message
-            })
-          });
-
-          addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
-          clearFlowState();
-          showTopicButtons();
-          break;
+  start() {
+    this.reset();
+    this.state.awaiting = false;
+    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+    showOptions([
+      { label: "✅ Ja tak", value: "ja" },
+      { label: "🔙 Nej, ikke lige nu", value: "nej" }
+    ], (val) => {
+      if (val === "ja") {
+        if (this.state.awaiting) return;
+        this.state.awaiting = true;
+        this.progress = 1;
+        setTimeout(() => handleNextStep(this), 100);
+      } else {
+        addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+        clearFlowState();
+        showTopicButtons();
       }
+    });
+  },
+
+  reset() {
+    this.progress = 0;
+    this.state = {};
+    this.answers = {};
+    persistFlowState(this);
+  },
+
+  handle(input) {
+    switch (this.progress) {
+      case 0:
+        if (input === "ja" || input === "ja tak") {
+          if (this.state.awaiting) return;
+          this.state.awaiting = true;
+          this.progress = 1;
+          setTimeout(() => handleNextStep(this), 100);
+          return; // Stop flow her, vent på næste trin
+        }
+
+        addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+        showOptions([
+          { label: "✅ Ja tak", value: "ja" },
+          { label: "🔙 Nej, ikke lige nu", value: "nej" }
+        ], (val) => {
+          if (val === "ja") {
+            if (this.state.awaiting) return;
+            this.state.awaiting = true;
+            this.progress = 1;
+            setTimeout(() => {
+              this.state.awaiting = false;
+              this.handle("");
+            }, 100);
+          } else {
+            addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+            clearFlowState();
+            showTopicButtons();
+          }
+        });
+        break;
+
+      case 1:
+        addMessage('bot', "Hvad hedder du?");
+        waitForUserInput((name) => {
+          if (!name || name.trim().length < 2) {
+            addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
+            this.handle(""); // gentag spørgsmålet
+            return;
+          }
+          this.answers.name = name.trim();
+          this.progress = 2;
+          persistFlowState(this);
+          this.handle("");
+        });
+        break;
+
+      case 2:
+        addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+        waitForUserInput((email) => {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
+            this.handle(""); // gentag spørgsmålet
+            return;
+          }
+          this.answers.email = email.trim();
+          this.progress = 3;
+          persistFlowState(this);
+          this.handle("");
+        });
+        break;
+
+      case 3:
+        addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+        waitForUserInput((msg) => {
+          if (!msg || msg.trim().length < 10) {
+            addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
+            this.handle(""); // gentag spørgsmålet
+            return;
+          }
+          this.answers.message = msg.trim();
+          this.progress = 4;
+          persistFlowState(this);
+          this.handle("");
+        });
+        break;
+
+      case 4:
+        fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: this.answers.name,
+            email: this.answers.email,
+            message: this.answers.message
+          })
+        });
+
+        addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+        clearFlowState();
+        showTopicButtons();
+        break;
     }
   }
+}
+
 };
 
 // === Main logic handler ===

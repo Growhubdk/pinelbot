@@ -4,25 +4,27 @@ const sendButton = document.getElementById('send-button');
 let userMessageCount = 0;
 let topicChosen = false;
 
-// Ny global ventefunktion til brugerinput
+// Global ventefunktion til brugerinput
 let awaitingUserInputCallback = null;
 
 function waitForUserInput(callback) {
   awaitingUserInputCallback = callback;
-  // Valgfrit: deaktiver input under vent
+  // Deaktiver input under vent
   inputField.disabled = true;
   sendButton.disabled = true;
+  inputField.placeholder = "Vent venligst på spørgsmålet...";
 }
 
 function onUserInput(text) {
   if (awaitingUserInputCallback) {
     const cb = awaitingUserInputCallback;
     awaitingUserInputCallback = null;
-    // Genaktiver input
+    // Aktiver input igen
     inputField.disabled = false;
     sendButton.disabled = false;
+    inputField.placeholder = "Skriv din besked her...";
     cb(text);
-    return true; // Signal: Input er håndteret som svar
+    return true; // Input håndteres som svar
   }
   return false; // Input håndteres normalt
 }
@@ -50,8 +52,7 @@ function removeTypingIndicator() {
 }
 
 function showTopicResetButton() {
-  const existingButton = document.getElementById('reset-topic');
-  if (existingButton) return;
+  if (document.getElementById('reset-topic')) return;
 
   const button = document.createElement('button');
   button.id = 'reset-topic';
@@ -60,7 +61,7 @@ function showTopicResetButton() {
   button.onclick = () => {
     userMessageCount = 0;
     topicChosen = false;
-    document.getElementById('reset-topic')?.remove();
+    button.remove();
     addMessage('bot', '🧠 Klar til et nyt spor? Hvad vil du gerne høre om?');
     showTopicButtons();
   };
