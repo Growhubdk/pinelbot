@@ -227,26 +227,38 @@ const flows = {
     handle(input) {
       switch (this.progress) {
         case 0:
-          addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-          showOptions([
-            { label: "✅ Ja tak", value: "ja" },
-            { label: "🔙 Nej, ikke lige nu", value: "nej" }
-          ], (val) => {
-            if (val === "ja") {
-              if (this.state.awaiting) return;
-              this.state.awaiting = true;
-              this.progress = 1;
-              setTimeout(() => {
-                this.state.awaiting = false;
-                this.handle("");
-              }, 100);
-            } else {
-              addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
-              clearFlowState();
-              showTopicButtons();
-            }
-          });
-          break;
+  if (input === "ja" || input === "ja tak") {
+    if (this.state.awaiting) return;
+    this.state.awaiting = true;
+    this.progress = 1;
+    setTimeout(() => {
+      this.state.awaiting = false;
+      this.handle("");
+    }, 100);
+    break;
+  }
+
+  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+  showOptions([
+    { label: "✅ Ja tak", value: "ja" },
+    { label: "🔙 Nej, ikke lige nu", value: "nej" }
+  ], (val) => {
+    if (val === "ja") {
+      if (this.state.awaiting) return;
+      this.state.awaiting = true;
+      this.progress = 1;
+      setTimeout(() => {
+        this.state.awaiting = false;
+        this.handle("");
+      }, 100);
+    } else {
+      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+      clearFlowState();
+      showTopicButtons();
+    }
+  });
+  break;
+
         case 1:
           addMessage('bot', "Hvad hedder du?");
           waitForUserInput((name) => {
