@@ -1,5 +1,22 @@
 let activeFlow = null;
 
+function addContactButton() {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'option-container';
+
+  const contactBtn = document.createElement('button');
+  contactBtn.innerText = "Kontakt Carsten";
+  contactBtn.className = 'option-button';
+  contactBtn.onclick = () => {
+    wrapper.remove();
+    activeFlow = "kontakt";      // Start kontakt flowet
+    flows.kontakt.start();
+  };
+
+  wrapper.appendChild(contactBtn);
+  document.getElementById('messages').appendChild(wrapper);
+}
+
 const flows = {
   aiTest: {
     name: "aiTest",
@@ -20,6 +37,7 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
+
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -70,6 +88,7 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
+
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -90,6 +109,7 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
+
       return true;
     },
     reset() {
@@ -120,6 +140,7 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
+
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -140,6 +161,7 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
+
       return true;
     },
     reset() {
@@ -170,6 +192,7 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
+
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -190,6 +213,7 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
+
       return true;
     },
     reset() {
@@ -233,7 +257,7 @@ const flows = {
       this.progress = 0;
       this.state = {};
       this.answers = {};
-      activeFlow = null; // VIGTIGT: nulstil global activeFlow
+      activeFlow = null;  // Nulstil aktivt flow
       persistFlowState(this);
     },
 
@@ -272,7 +296,6 @@ const flows = {
         case 1:
           addMessage('bot', "Hvad hedder du?");
           waitForUserInput((name) => {
-            console.log("Navn modtaget i callback:", name);
             if (!name || name.trim().length < 2) {
               addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
               this.handle(""); // gentag spørgsmålet
@@ -291,7 +314,7 @@ const flows = {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
               addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
-              this.handle("");
+              this.handle(""); // gentag spørgsmålet
               return;
             }
             this.answers.email = email.trim();
@@ -306,7 +329,7 @@ const flows = {
           waitForUserInput((msg) => {
             if (!msg || msg.trim().length < 10) {
               addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
-              this.handle("");
+              this.handle(""); // gentag spørgsmålet
               return;
             }
             this.answers.message = msg.trim();
@@ -439,7 +462,6 @@ function showResumeButtons() {
     if (activeFlow && flows[activeFlow]) {
       flows[activeFlow].reset();
     }
-    activeFlow = null; // Nulstil aktivt flow når bruger starter forfra
     addMessage('bot', '🧠 Klar til et nyt emne? Hvad vil du gerne vide mere om?');
     showTopicButtons();
   };

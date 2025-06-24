@@ -27,7 +27,7 @@ function onUserInput(text) {
     cb(text);
     return true; // signalerer at input blev håndteret som svar
   }
-  return false; // Input håndteres normalt
+  return false;
 }
 
 function addMessage(sender, text) {
@@ -39,7 +39,6 @@ function addMessage(sender, text) {
 }
 
 function showTypingIndicator() {
-  if (document.getElementById('typing-indicator')) return; // Undgå dubletter
   const typing = document.createElement('div');
   typing.className = 'bubble bot-bubble typing';
   typing.id = 'typing-indicator';
