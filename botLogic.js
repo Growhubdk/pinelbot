@@ -209,26 +209,26 @@ const flows = {
   },
 
   kontakt: {
-  name: "kontakt",
-  triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring"],
-  progress: 0,
-  state: {},
-  answers: {},
-  start() {
-    this.reset();
-  },
-  reset() {
-    this.progress = 0;
-    this.state = {};
-    this.answers = {};
-    this.handle("");
-    persistFlowState(this);
-  },
-  handle(input) {
-    switch (this.progress) {
-      case 0:
-  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-  showOptions([
+    name: "kontakt",
+    triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring"],
+    progress: 0,
+    state: {},
+    answers: {},
+    start() {
+      this.reset();
+    },
+    reset() {
+      this.progress = 0;
+      this.state = {};
+      this.answers = {};
+      this.handle("");
+      persistFlowState(this);
+    },
+    handle(input) {
+      switch (this.progress) {
+        case 0:
+          addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+          showOptions([
             { label: "✅ Ja tak", value: "ja" },
             { label: "🔙 Nej, ikke lige nu", value: "nej" }
           ], (val) => {
@@ -247,53 +247,51 @@ const flows = {
             }
           });
           break;
+        case 1:
+          addMessage('bot', "Hvad hedder du?");
+          waitForUserInput((name) => {
+            this.answers.name = name;
+            this.progress = 2;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 2:
+          addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+          waitForUserInput((email) => {
+            this.answers.email = email;
+            this.progress = 3;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 3:
+          addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+          waitForUserInput((msg) => {
+            this.answers.message = msg;
+            this.progress = 4;
+            persistFlowState(this);
+            this.handle("");
+          });
+          break;
+        case 4:
+          fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: this.answers.name,
+              email: this.answers.email,
+              message: this.answers.message
+            })
+          });
 
-      case 1:
-        addMessage('bot', "Hvad hedder du?");
-        waitForUserInput((name) => {
-          this.answers.name = name;
-          this.progress = 2;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
-      case 2:
-        addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
-        waitForUserInput((email) => {
-          this.answers.email = email;
-          this.progress = 3;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
-      case 3:
-        addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
-        waitForUserInput((msg) => {
-          this.answers.message = msg;
-          this.progress = 4;
-          persistFlowState(this);
-          this.handle("");
-        });
-        break;
-      case 4:
-        fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: this.answers.name,
-            email: this.answers.email,
-            message: this.answers.message
-          })
-        });
-
-        addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
-        clearFlowState();
-        showTopicButtons();
-        break;
+          addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+          clearFlowState();
+          showTopicButtons();
+          break;
+      }
     }
   }
-}
-
 };
 
 // === Main logic handler ===
@@ -301,11 +299,9 @@ function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
   if (activeFlow) {
-  // Undgå dobbelttrigger hvis input allerede bliver håndteret i flowet
-  if (flows[activeFlow].state.awaiting) return true;
-  return flows[activeFlow].handle(input);
-}
-
+    if (flows[activeFlow].state.awaiting) return true;
+    return flows[activeFlow].handle(input);
+  }
 
   for (const key in flows) {
     const flow = flows[key];
