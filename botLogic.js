@@ -301,8 +301,11 @@ function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
   if (activeFlow) {
-    return flows[activeFlow].handle(input);
-  }
+  // Undgå dobbelttrigger hvis input allerede bliver håndteret i flowet
+  if (flows[activeFlow].state.awaiting) return true;
+  return flows[activeFlow].handle(input);
+}
+
 
   for (const key in flows) {
     const flow = flows[key];
