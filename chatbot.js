@@ -20,13 +20,14 @@ function onUserInput(text) {
     console.log("Modtager brugerinput:", text);
     const cb = awaitingUserInputCallback;
     awaitingUserInputCallback = null;
+    // Genaktiver input
     inputField.disabled = false;
     sendButton.disabled = false;
     inputField.placeholder = "Skriv din besked her...";
     cb(text);
     return true; // signalerer at input blev håndteret som svar
   }
-  return false;
+  return false; // Input håndteres normalt
 }
 
 function addMessage(sender, text) {
@@ -38,7 +39,7 @@ function addMessage(sender, text) {
 }
 
 function showTypingIndicator() {
-  if (document.getElementById('typing-indicator')) return; // undgå dubletter
+  if (document.getElementById('typing-indicator')) return; // Undgå dubletter
   const typing = document.createElement('div');
   typing.className = 'bubble bot-bubble typing';
   typing.id = 'typing-indicator';
@@ -186,3 +187,7 @@ inputField.addEventListener('keypress', (e) => {
 sendButton.addEventListener('click', () => {
   handleUserInput();
 });
+
+function scrollToBottom() {
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}

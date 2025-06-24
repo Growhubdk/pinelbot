@@ -20,7 +20,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -71,7 +70,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -92,7 +90,6 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -123,7 +120,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -144,7 +140,6 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -175,7 +170,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -196,7 +190,6 @@ const flows = {
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -240,7 +233,7 @@ const flows = {
       this.progress = 0;
       this.state = {};
       this.answers = {};
-      activeFlow = null;  // VIGTIGT: nulstil global activeFlow
+      activeFlow = null; // VIGTIGT: nulstil global activeFlow
       persistFlowState(this);
     },
 
@@ -277,61 +270,50 @@ const flows = {
           break;
 
         case 1:
-          if (!this.state.awaiting) {
-            addMessage('bot', "Hvad hedder du?");
-            this.state.awaiting = true;
-            waitForUserInput((name) => {
-              this.state.awaiting = false;
-              if (!name || name.trim().length < 2) {
-                addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
-                this.handle(""); // gentag spørgsmålet
-                return;
-              }
-              this.answers.name = name.trim();
-              this.progress = 2;
-              persistFlowState(this);
-              this.handle("");
-            });
-          }
+          addMessage('bot', "Hvad hedder du?");
+          waitForUserInput((name) => {
+            console.log("Navn modtaget i callback:", name);
+            if (!name || name.trim().length < 2) {
+              addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
+              this.handle(""); // gentag spørgsmålet
+              return;
+            }
+            this.answers.name = name.trim();
+            this.progress = 2;
+            persistFlowState(this);
+            this.handle("");
+          });
           break;
 
         case 2:
-          if (!this.state.awaiting) {
-            addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
-            this.state.awaiting = true;
-            waitForUserInput((email) => {
-              this.state.awaiting = false;
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-              if (!emailRegex.test(email)) {
-                addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
-                this.handle(""); // gentag spørgsmålet
-                return;
-              }
-              this.answers.email = email.trim();
-              this.progress = 3;
-              persistFlowState(this);
+          addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
+          waitForUserInput((email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+              addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
               this.handle("");
-            });
-          }
+              return;
+            }
+            this.answers.email = email.trim();
+            this.progress = 3;
+            persistFlowState(this);
+            this.handle("");
+          });
           break;
 
         case 3:
-          if (!this.state.awaiting) {
-            addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
-            this.state.awaiting = true;
-            waitForUserInput((msg) => {
-              this.state.awaiting = false;
-              if (!msg || msg.trim().length < 10) {
-                addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
-                this.handle(""); // gentag spørgsmålet
-                return;
-              }
-              this.answers.message = msg.trim();
-              this.progress = 4;
-              persistFlowState(this);
+          addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
+          waitForUserInput((msg) => {
+            if (!msg || msg.trim().length < 10) {
+              addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
               this.handle("");
-            });
-          }
+              return;
+            }
+            this.answers.message = msg.trim();
+            this.progress = 4;
+            persistFlowState(this);
+            this.handle("");
+          });
           break;
 
         case 4:
@@ -406,7 +388,25 @@ function persistFlowState(flow) {
   localStorage.setItem("activeFlow", JSON.stringify(data));
 }
 
-
+function loadFlowState() {
+  const raw = localStorage.getItem("activeFlow");
+  if (!raw) return;
+  try {
+    const saved = JSON.parse(raw);
+    const flow = flows[saved.name];
+    if (flow) {
+      flow.state = saved.state;
+      flow.progress = saved.progress;
+      flow.answers = saved.answers;
+      activeFlow = saved.name;
+      addMessage('bot', `📌 Du havde et flow i gang sidst: *${saved.name}*.\nVil du fortsætte, hvor du slap?`);
+      showResumeButtons();
+      scrollToBottom();
+    }
+  } catch (e) {
+    console.error("Kunne ikke loade gemt flow:", e);
+  }
+}
 
 function clearFlowState() {
   localStorage.removeItem("activeFlow");
@@ -428,9 +428,7 @@ function showResumeButtons() {
   yesBtn.onclick = () => {
     wrapper.remove();
     const flow = flows[activeFlow];
-    if (flow) {
-      flow.handle(""); // Genoptag flowet uden at kalde start()
-    }
+    if (flow) flow.handle("");
   };
 
   const noBtn = document.createElement('button');
@@ -440,8 +438,8 @@ function showResumeButtons() {
     wrapper.remove();
     if (activeFlow && flows[activeFlow]) {
       flows[activeFlow].reset();
-      activeFlow = null;
     }
+    activeFlow = null; // Nulstil aktivt flow når bruger starter forfra
     addMessage('bot', '🧠 Klar til et nyt emne? Hvad vil du gerne vide mere om?');
     showTopicButtons();
   };
@@ -450,4 +448,3 @@ function showResumeButtons() {
   wrapper.appendChild(noBtn);
   document.getElementById('messages').appendChild(wrapper);
 }
-
