@@ -305,7 +305,7 @@ function handleBotLogic(userInput) {
 
   for (const key in flows) {
     const flow = flows[key];
-    if (flow.triggers && flow.triggers.some(trigger => input.includes(trigger))) {
+    if (!activeFlow && flow.triggers && flow.triggers.some(trigger => input.includes(trigger))) {
       activeFlow = flow.name;
       flow.start();
       return true;
