@@ -227,21 +227,22 @@ const flows = {
   handle(input) {
     switch (this.progress) {
       case 0:
-        addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-        showOptions([
-          { label: "✅ Ja tak", value: "ja" },
-          { label: "🔙 Nej, ikke lige nu", value: "nej" }
-        ], (val) => {
-          if (val === "ja") {
-            this.progress = 1;
-            this.handle("");
-          } else {
-            addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
-            clearFlowState();
-            showTopicButtons();
-          }
-        });
-        break;
+  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+  showOptions([
+    { label: "✅ Ja tak", value: "ja" },
+    { label: "🔙 Nej, ikke lige nu", value: "nej" }
+  ], (val) => {
+    if (val === "ja") {
+      this.progress = 1;
+      setTimeout(() => this.handle(""), 100); // 👈 forhindrer gentagelse
+    } else {
+      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+      clearFlowState();
+      showTopicButtons();
+    }
+  });
+  break;
+
       case 1:
         addMessage('bot', "Hvad hedder du?");
         waitForUserInput((name) => {
