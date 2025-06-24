@@ -210,6 +210,7 @@ const flows = {
 
   kontakt: {
     name: "kontakt",
+    triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "snak", "personlig sparring"],
     progress: 0,
     state: {},
     answers: {},
