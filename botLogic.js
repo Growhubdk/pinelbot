@@ -406,25 +406,7 @@ function persistFlowState(flow) {
   localStorage.setItem("activeFlow", JSON.stringify(data));
 }
 
-function loadFlowState() {
-  const raw = localStorage.getItem("activeFlow");
-  if (!raw) return;
-  try {
-    const saved = JSON.parse(raw);
-    const flow = flows[saved.name];
-    if (flow) {
-      flow.state = saved.state;
-      flow.progress = saved.progress;
-      flow.answers = saved.answers;
-      activeFlow = saved.name;
-      addMessage('bot', `📌 Du havde et flow i gang sidst: *${saved.name}*.\nVil du fortsætte, hvor du slap?`);
-      showResumeButtons();
-      scrollToBottom();
-    }
-  } catch (e) {
-    console.error("Kunne ikke loade gemt flow:", e);
-  }
-}
+
 
 function clearFlowState() {
   localStorage.removeItem("activeFlow");
@@ -446,7 +428,9 @@ function showResumeButtons() {
   yesBtn.onclick = () => {
     wrapper.remove();
     const flow = flows[activeFlow];
-    if (flow) flow.handle("");
+    if (flow) {
+      flow.handle(""); // Genoptag flowet uden at kalde start()
+    }
   };
 
   const noBtn = document.createElement('button');
@@ -456,6 +440,7 @@ function showResumeButtons() {
     wrapper.remove();
     if (activeFlow && flows[activeFlow]) {
       flows[activeFlow].reset();
+      activeFlow = null;
     }
     addMessage('bot', '🧠 Klar til et nyt emne? Hvad vil du gerne vide mere om?');
     showTopicButtons();
@@ -465,3 +450,4 @@ function showResumeButtons() {
   wrapper.appendChild(noBtn);
   document.getElementById('messages').appendChild(wrapper);
 }
+
