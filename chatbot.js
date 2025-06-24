@@ -20,7 +20,6 @@ function onUserInput(text) {
     console.log("Modtager brugerinput:", text);
     const cb = awaitingUserInputCallback;
     awaitingUserInputCallback = null;
-    // Genaktiver input
     inputField.disabled = false;
     sendButton.disabled = false;
     inputField.placeholder = "Skriv din besked her...";
@@ -39,6 +38,7 @@ function addMessage(sender, text) {
 }
 
 function showTypingIndicator() {
+  if (document.getElementById('typing-indicator')) return; // undgå dubletter
   const typing = document.createElement('div');
   typing.className = 'bubble bot-bubble typing';
   typing.id = 'typing-indicator';
