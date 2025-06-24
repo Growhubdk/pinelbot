@@ -215,8 +215,9 @@ const flows = {
     state: {},
     answers: {},
     start() {
-      this.reset();
-    },
+  this.reset();
+  this.state.awaiting = false; // Reset af ventetilstand ved start
+},
     reset() {
       this.progress = 0;
       this.state = {};
@@ -230,11 +231,9 @@ const flows = {
   if (input === "ja" || input === "ja tak") {
   if (this.state.awaiting) return;
   this.state.awaiting = true;
-  this.progress = 1;
-  setTimeout(() => {
-    this.state.awaiting = false;
-    this.handle("");
-  }, 100);
+this.progress = 1;
+setTimeout(() => handleNextStep(this), 100);
+
   return; // 👈 VIGTIG: Forhindrer at flowet fortsætter til resten af case 0
 }
 
@@ -316,7 +315,7 @@ function handleBotLogic(userInput) {
   if (flow.state.awaiting) return true;
 
   // Beskyt mod dobbelt trigger af case 0 i kontakt-flow
-  if (flow.name === "kontakt" && flow.progress === 0) return true;
+  if (flow.name === "kontakt" && flow.progress === 0 && input !== "ja" && input !== "ja tak") return true;
 
   return flow.handle(input);
 }
@@ -380,6 +379,12 @@ function loadFlowState() {
 
 function clearFlowState() {
   localStorage.removeItem("activeFlow");
+}
+
+// 💡 Ny helper-funktion
+function handleNextStep(flow) {
+  flow.state.awaiting = false;
+  flow.handle("");
 }
 
 function showResumeButtons() {
