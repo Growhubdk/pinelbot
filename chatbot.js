@@ -1,9 +1,31 @@
-// --- chatbot.js ---
 const inputField = document.getElementById('user-input');
 const messagesDiv = document.getElementById('messages');
 const sendButton = document.getElementById('send-button');
 let userMessageCount = 0;
 let topicChosen = false;
+
+// Ny global ventefunktion til brugerinput
+let awaitingUserInputCallback = null;
+
+function waitForUserInput(callback) {
+  awaitingUserInputCallback = callback;
+  // Valgfrit: deaktiver input under vent
+  inputField.disabled = true;
+  sendButton.disabled = true;
+}
+
+function onUserInput(text) {
+  if (awaitingUserInputCallback) {
+    const cb = awaitingUserInputCallback;
+    awaitingUserInputCallback = null;
+    // Genaktiver input
+    inputField.disabled = false;
+    sendButton.disabled = false;
+    cb(text);
+    return true; // Signal: Input er håndteret som svar
+  }
+  return false; // Input håndteres normalt
+}
 
 function addMessage(sender, text) {
   const msg = document.createElement('div');
@@ -52,9 +74,8 @@ function showTopicButtons() {
     { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
     { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
     { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
-    { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' } // 👈 Tilføj denne linje
+    { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' }
   ];
-
 
   const wrapper = document.createElement('div');
   wrapper.id = 'topic-buttons';
@@ -109,16 +130,13 @@ window.onload = () => {
     loadFlowState();
   }
 
-  // Hvis der ikke findes gemt flow, vis standard velkomst
   const raw = localStorage.getItem("activeFlow");
   if (!raw) {
     addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Hvad vil du gerne vide mere om?');
     showTopicButtons();
-    scrollToBottom(); // Sikrer korrekt visning
+    scrollToBottom();
   }
 };
-
-
 
 async function handleUserInput() {
   const userText = inputField.value.trim();
@@ -128,6 +146,9 @@ async function handleUserInput() {
   userMessageCount++;
 
   if (!topicChosen) topicChosen = true;
+
+  // Hvis bot venter på svar, håndter det her:
+  if (onUserInput(userText)) return;
 
   if (typeof handleBotLogic === 'function') {
     const handled = handleBotLogic(userText);
@@ -150,7 +171,6 @@ async function handleUserInput() {
     if (userMessageCount === 3 || userMessageCount === 6) {
       setTimeout(showTopicResetButton, 1000);
     }
-
   } catch (error) {
     removeTypingIndicator();
     addMessage('bot', "Beklager, noget gik galt. Prøv igen senere.");
