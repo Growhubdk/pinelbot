@@ -267,6 +267,16 @@ const flows = {
           });
           break;
         case 4:
+          fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: this.answers.name,
+              email: this.answers.email,
+              message: this.answers.message
+            })
+          });
+
           addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
           clearFlowState();
           showTopicButtons();
