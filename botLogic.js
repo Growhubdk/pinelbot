@@ -308,7 +308,7 @@ function handleBotLogic(userInput) {
     }
   }
 
-  if (input === "ja tak") {
+  if (!activeFlow && input === "ja tak") {
     addMessage('bot', "Her er et konkret forslag:");
     if (flows.automation.answers.length > 0) {
       addMessage('bot', "⚙️ Start med at automatisere én manuel opgave – fx at flytte data mellem Excel og mails.");
