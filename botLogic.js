@@ -299,9 +299,15 @@ function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
   if (activeFlow) {
-    if (flows[activeFlow].state.awaiting) return true;
-    return flows[activeFlow].handle(input);
-  }
+  const flow = flows[activeFlow];
+  // Ignorer input hvis vi venter på brugerhandling
+  if (flow.state.awaiting) return true;
+
+  // Beskyt mod dobbelt trigger af case 0 i kontakt-flow
+  if (flow.name === "kontakt" && flow.progress === 0) return true;
+
+  return flow.handle(input);
+}
 
   for (const key in flows) {
     const flow = flows[key];
