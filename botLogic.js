@@ -348,9 +348,25 @@ const flows = {
 function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
+  // 🔄 Beskyt mod gentagelse af aktivt flow
+  const flowAlias = {
+    kontakt: ["kontakt", "kontakte", "kontaktes", "i kontakt", "snakke med", "tale med"],
+    automation: ["automatisering", "automatisere", "effektivisere", "gentagne opgaver"],
+    aiTest: ["ai test", "ai-parathed", "paratheds-test", "klar til ai", "vi er klar"],
+    marketing: ["marketing", "kampagne", "annoncering", "leads", "mailchimp", "google ads", "sociale medier"],
+    dataAnalysis: ["data", "analyse", "dashboard", "rapporter", "kpi", "excel", "crm"]
+  };
+
+  for (const [flowName, keywords] of Object.entries(flowAlias)) {
+    if (activeFlow === flowName && keywords.some(k => input.includes(k))) {
+      addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
+      return true;
+    }
+  }
+
+  // 💬 Behandl aktivt flow
   if (activeFlow) {
     const flow = flows[activeFlow];
-    // Ignorer input hvis vi venter på brugerhandling
     if (flow.state.awaiting) return true;
 
     // Beskyt mod dobbelt trigger af case 0 i kontakt-flow
@@ -359,15 +375,17 @@ function handleBotLogic(userInput) {
     return flow.handle(input);
   }
 
+  // 🚀 Start nyt flow baseret på trigger
   for (const key in flows) {
     const flow = flows[key];
-    if (!activeFlow && flow.triggers && flow.triggers.some(trigger => input.includes(trigger))) {
+    if (flow.triggers && flow.triggers.some(trigger => input.includes(trigger))) {
       activeFlow = flow.name;
       flow.start();
       return true;
     }
   }
 
+  // 🎯 Tilfælde: bruger skriver 'ja tak' uden flow
   if (!activeFlow && input === "ja tak") {
     addMessage('bot', "Her er et konkret forslag:");
     if (flows.automation.answers.length > 0) {
@@ -384,6 +402,7 @@ function handleBotLogic(userInput) {
 
   return false;
 }
+
 
 // === Gem og hent samtalestatus ===
 function persistFlowState(flow) {

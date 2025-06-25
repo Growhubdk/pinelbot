@@ -71,6 +71,22 @@ function showTopicResetButton() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+function resetTopicFlow() {
+  userMessageCount = 0;
+  topicChosen = false;
+  clearFlowState();
+
+  // 🔁 Fjern alle aktive valg-knapper (optioner, emner, resume-knapper osv.)
+  const buttons = document.querySelectorAll('.option-container, .topic-button, .option-button, #reset-topic');
+  buttons.forEach(btn => btn.remove());
+
+  // 🧠 Start samtale forfra
+  addMessage('bot', '🔁 Du har skiftet emne. Hvad vil du gerne høre om?');
+  showTopicButtons();
+}
+
+
+
 function showTopicButtons() {
   const topics = [
     { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
