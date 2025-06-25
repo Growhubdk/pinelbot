@@ -137,7 +137,7 @@ body {
 
 #sticky-reset {
   position: fixed;
-  bottom: 20px;
+  bottom: 80px;
   right: 20px;
   background-color: #f0f0f0;
   border: none;
@@ -149,6 +149,7 @@ body {
   transition: background-color 0.2s ease;
   z-index: 1000;
 }
+
 
 #sticky-reset:hover {
   background-color: #ddd;
