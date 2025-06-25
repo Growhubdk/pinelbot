@@ -20,12 +20,11 @@ function onUserInput(text) {
     console.log("Modtager brugerinput:", text);
     const cb = awaitingUserInputCallback;
     awaitingUserInputCallback = null;
-    // Genaktiver input
     inputField.disabled = false;
     sendButton.disabled = false;
     inputField.placeholder = "Skriv din besked her...";
     cb(text);
-    return true; // signalerer at input blev håndteret som svar
+    return true;
   }
   return false;
 }
@@ -35,7 +34,7 @@ function addMessage(sender, text) {
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
   msg.innerHTML = text;
   messagesDiv.appendChild(msg);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  scrollToBottom();
 }
 
 function showTypingIndicator() {
@@ -44,7 +43,7 @@ function showTypingIndicator() {
   typing.id = 'typing-indicator';
   typing.innerText = 'PinelBot skriver...';
   messagesDiv.appendChild(typing);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  scrollToBottom();
 }
 
 function removeTypingIndicator() {
@@ -57,16 +56,12 @@ function resetTopicFlow() {
   topicChosen = false;
   clearFlowState();
 
-  // 🔁 Fjern alle aktive valg-knapper (optioner, emner, resume-knapper osv.)
   const buttons = document.querySelectorAll('.option-container, .topic-button, .option-button, #reset-topic');
   buttons.forEach(btn => btn.remove());
 
-  // 🧠 Start samtale forfra
   addMessage('bot', '🔁 Du har skiftet emne. Hvad vil du gerne høre om?');
   showTopicButtons();
 }
-
-
 
 function showTopicButtons() {
   const topics = [
@@ -97,7 +92,7 @@ function showTopicButtons() {
   });
 
   messagesDiv.appendChild(wrapper);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  scrollToBottom();
 }
 
 async function handleSimulatedUserInput(text) {
@@ -146,7 +141,6 @@ async function handleUserInput() {
 
   if (!topicChosen) topicChosen = true;
 
-  // Hvis bot venter på svar, håndter det her:
   if (onUserInput(userText)) return;
 
   if (typeof handleBotLogic === 'function') {
@@ -183,4 +177,24 @@ sendButton.addEventListener('click', () => {
 
 function scrollToBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ✅ INDSAT HER: showOptions
+function showOptions(options, callback) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'option-container';
+
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.innerText = opt.label;
+    btn.className = 'option-button';
+    btn.onclick = () => {
+      wrapper.remove();
+      callback(opt.value);
+    };
+    wrapper.appendChild(btn);
+  });
+
+  messagesDiv.appendChild(wrapper);
+  scrollToBottom();
 }
