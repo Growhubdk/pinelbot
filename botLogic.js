@@ -229,6 +229,7 @@ const flows = {
 
   start() {
   this.reset();
+  activeFlow = this.name; // 🟢 Sæt aktivt flow FØR brugerinput kaldes!
   this.state.awaiting = true;
   const self = this;
 
