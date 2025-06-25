@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   const { name, email, message } = req.body;
 
   try {
-    const webhookUrl = "https://script.google.com/macros/s/AKfycbw0wE4-Zvls-FZaUapRbwyNJjjeariWaWhMtvmOvCOijVeQfAoQhf8oNotXW0GT37AI/exec";
+    const webhookUrl = "https://script.google.com/macros/s/AKfycbzJOx_gIJsfQ7LQHe_V2fai2W7Wz0mu-P4hg1bT8Sf5PVJa7nkNZJlC_AQ5FL_WdB0/exec";
 
     const response = await fetch(webhookUrl, {
       method: "POST",
