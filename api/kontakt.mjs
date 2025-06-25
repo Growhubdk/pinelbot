@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://api.airtable.com/v0/appxkynJkBfhXFYd4/Pinelbotkontakt', {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer patnTLodDufOZXjVG.9f4dffa792ae5f6c3884ba051be05c0ac37101c67f47ac6fa714f0b4e9c1ea39',
+        Authorization: `Bearer ${process.env.AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
