@@ -235,7 +235,7 @@ const flows = {
   start() {
     this.reset();
     this.state.awaiting = true;
-    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+
     showOptions([
       { label: "✅ Ja tak", value: "ja" },
       { label: "🔙 Nej, ikke lige nu", value: "nej" }
@@ -250,6 +250,8 @@ const flows = {
         this.reset();
       }
     });
+
+    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
   },
 
   next() {
@@ -321,16 +323,7 @@ const flows = {
   },
 
   handle(input) {
-    const lower = input.toLowerCase();
-    if (this.progress === 0) {
-      if (["ja", "ja tak"].includes(lower) || this.triggers.some(trigger => lower.includes(trigger))) {
-        this.progress = 1;
-        this.next();
-        return true;
-      }
-      return true;
-    }
-    return true;
+    return true; // alt håndteres via next()
   },
 
   reset() {
@@ -341,7 +334,9 @@ const flows = {
     persistFlowState(this);
   }
 },
-}; 
+};
+
+
 
 
 // === Main logic handler ===
