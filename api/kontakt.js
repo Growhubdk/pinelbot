@@ -9,29 +9,46 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Kun POST tilladt' });
+    return res.status(405).json({ message: 'Method not allowed' });
   }
 
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const { name, email, message } = req.body;
+  const timestamp = new Date().toISOString();
 
   try {
-    const webhookUrl = "https://script.google.com/macros/s/AKfycbzJOx_gIJsfQ7LQHe_V2fai2W7Wz0mu-P4hg1bT8Sf5PVJa7nkNZJlC_AQ5FL_WdB0/exec";
-
-    const response = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, message })
+    const response = await fetch('https://api.airtable.com/v0/appxkynJkBfhXFYd4/Pinelbotkontakt', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer patnTLodDufOZXjVG.9f4dffa792ae5f6c3884ba051be05c0ac37101c67f47ac6fa714f0b4e9c1ea39',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        records: [
+          {
+            fields: {
+              Name: name,
+              Email: email,
+              Message: message,
+              Timestamp: timestamp
+            }
+          }
+        ]
+      })
     });
 
-    const raw = await response.text();
-    console.log("Webhook svar:", raw);
-    res.setHeader('Content-Type', 'text/plain');
-    return res.status(200).send(raw);
+    const data = await response.json();
 
-  } catch (error) {
-    console.error("Webhook-fejl:", error);
-    return res.status(500).json({ error: 'Webhook-fejl' });
+    if (!response.ok) {
+      console.error('❌ Airtable-fejl:', data);
+      return res.status(500).json({ message: 'Airtable error', error: data });
+    }
+
+    console.log('✅ Airtable-svar:', data);
+    res.status(200).json({ message: 'Kontakt gemt i Airtable', airtableId: data.records[0].id });
+  } catch (err) {
+    console.error('❌ Server-fejl:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 }
