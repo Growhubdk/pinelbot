@@ -255,6 +255,7 @@ const flows = {
   next() {
   switch (this.progress) {
     case 1:
+      console.log("💡 Kontaktflow aktiv? ", activeFlow, this.progress);
       setTimeout(() => {
         this.state.awaiting = true;
         addMessage('bot', "Hvad hedder du?");
