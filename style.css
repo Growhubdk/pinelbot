@@ -138,7 +138,7 @@ body {
 
 #sticky-reset {
   position: fixed;
-  bottom: 120px;
+  bottom: 160px; /* Hæv knappen yderligere */
   right: 20px;
   background-color: #f0f0f0;
   border: none;
@@ -150,6 +150,7 @@ body {
   transition: background-color 0.2s ease;
   z-index: 1000;
 }
+
 
 
 #sticky-reset:hover {
