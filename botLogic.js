@@ -218,14 +218,19 @@ const flows = {
   kontakt: {
   name: "kontakt",
   triggers: [
-    "kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring", "jeg vil i kontakt", "carsten", "snakke med"
+    "kontakt", "kontakte", "kontaktes", "i kontakt", "kontakt carsten",
+    "snakke med", "tale med", "jeg vil gerne kontaktes",
+    "jeg vil i kontakt", "jeg vil gerne i kontakt med carsten",
+    "personlig sparring", "blive kontaktet"
   ],
   progress: 0,
-  state: {},
+  state: { awaiting: false },
   answers: {},
 
   start() {
     this.reset();
+    activeFlow = this.name;
+    this.state.awaiting = true;
     addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
     showOptions([
       { label: "✅ Ja tak", value: "ja" },
@@ -244,12 +249,11 @@ const flows = {
   },
 
   next() {
+    this.state.awaiting = true;
     switch (this.progress) {
       case 1:
-        this.state.awaiting = true;
         addMessage('bot', "Hvad hedder du?");
         waitForUserInput((name) => {
-          this.state.awaiting = false;
           if (!name || name.trim().length < 2) {
             addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
             this.next();
@@ -257,16 +261,13 @@ const flows = {
           }
           this.answers.name = name.trim();
           this.progress = 2;
-          persistFlowState(this);
           this.next();
         });
         break;
 
       case 2:
-        this.state.awaiting = true;
         addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
         waitForUserInput((email) => {
-          this.state.awaiting = false;
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(email)) {
             addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
@@ -275,16 +276,13 @@ const flows = {
           }
           this.answers.email = email.trim();
           this.progress = 3;
-          persistFlowState(this);
           this.next();
         });
         break;
 
       case 3:
-        this.state.awaiting = true;
         addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
         waitForUserInput((msg) => {
-          this.state.awaiting = false;
           if (!msg || msg.trim().length < 10) {
             addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
             this.next();
@@ -292,7 +290,6 @@ const flows = {
           }
           this.answers.message = msg.trim();
           this.progress = 4;
-          persistFlowState(this);
           this.next();
         });
         break;
@@ -318,22 +315,22 @@ const flows = {
   handle(input) {
     const lower = input.toLowerCase();
 
-    // Start flow hvis bruger skriver kontakt-relateret i første omgang
-    if (this.progress === 0 && (["ja", "ja tak"].includes(lower) || this.triggers.some(t => lower.includes(t)))) {
+    if (this.progress === 0 && ["ja", "ja tak"].includes(lower)) {
       this.progress = 1;
       this.next();
       return true;
     }
 
-    // Afvent brugersvar ved trin 1-3
     if (this.state.awaiting) return true;
 
+    // Hvis alt ellers ser fint ud og brugeren skriver noget midt i flowet
+    this.next();
     return true;
   },
 
   reset() {
     this.progress = 0;
-    this.state = {};
+    this.state = { awaiting: false };
     this.answers = {};
     activeFlow = null;
     persistFlowState(this);
@@ -365,15 +362,15 @@ function handleBotLogic(userInput) {
 
   // ✅ Hvis brugeren tydeligt vil i kontakt med Carsten uanset aktivt flow
   const kontaktOrd = ["kontakt", "carsten", "blive kontaktet", "snakke med", "personlig sparring", "tage kontakt"];
-  if (kontaktOrd.some(k => input.includes(k))) {
-    if (activeFlow === "kontakt") {
-      addMessage('bot', "Bare rolig – vi er allerede i gang med at få dig i kontakt med Carsten 😊");
-      return true;
-    }
-    activeFlow = "kontakt";
-    flows.kontakt.start();
+if (kontaktOrd.some(k => input.includes(k))) {
+  if (activeFlow === "kontakt" && flows.kontakt.progress > 0) {
+    addMessage('bot', "Bare rolig – vi er allerede i gang med at få dig i kontakt med Carsten 😊");
     return true;
   }
+  activeFlow = "kontakt";
+  flows.kontakt.start();
+  return true;
+}
 
   // 💬 Behandl aktivt flow
   if (activeFlow) {
