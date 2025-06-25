@@ -30,8 +30,7 @@ export default async function handler(req, res) {
             fields: {
               Name: name,
               Email: email,
-              Message: message,
-              Timestamp: timestamp
+              Message: message
             }
           }
         ]
