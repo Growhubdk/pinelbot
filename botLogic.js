@@ -227,15 +227,21 @@ const flows = {
 
   kontakt: {
   name: "kontakt",
-  triggers: ["kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring", "jeg vil i kontakt"],
+  triggers: [
+    "kontakt", "kontakte", "kontaktes", "i kontakt", "kontakt carsten",
+    "snakke med", "tale med", "jeg vil gerne kontaktes",
+    "jeg vil i kontakt", "jeg vil gerne i kontakt med carsten"
+  ],
   progress: 0,
   state: {},
   answers: {},
 
   start() {
     this.reset();
+    activeFlow = this.name; // 🔄 Marker flow som aktivt
     this.state.awaiting = true;
 
+    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
     showOptions([
       { label: "✅ Ja tak", value: "ja" },
       { label: "🔙 Nej, ikke lige nu", value: "nej" }
@@ -250,12 +256,10 @@ const flows = {
         this.reset();
       }
     });
-
-    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
   },
 
   next() {
-    this.state.awaiting = false;
+    this.state.awaiting = true;
     switch (this.progress) {
       case 1:
         addMessage('bot', "Hvad hedder du?");
@@ -323,7 +327,21 @@ const flows = {
   },
 
   handle(input) {
-    return true; // alt håndteres via next()
+    const lower = input.toLowerCase();
+
+    // Hvis flow er på pause og brugeren skriver noget matchende – start det op
+    if (this.progress === 0 && (["ja", "ja tak"].includes(lower) || this.triggers.some(trigger => lower.includes(trigger)))) {
+      this.progress = 1;
+      this.next();
+      return true;
+    }
+
+    // Hvis vi venter på et brugersvar, vent
+    if (this.state.awaiting) return true;
+
+    // Hvis vi er klar til næste trin, fortsæt flowet
+    this.next();
+    return true;
   },
 
   reset() {
@@ -333,7 +351,7 @@ const flows = {
     activeFlow = null;
     persistFlowState(this);
   }
-},
+}
 };
 
 
