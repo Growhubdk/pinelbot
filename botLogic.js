@@ -228,8 +228,8 @@ const flows = {
   answers: {},
 
   start() {
-  this.reset();
-  activeFlow = this.name; // 🟢 Sæt aktivt flow FØR brugerinput kaldes!
+  this.reset(false); // behold activeFlow
+  activeFlow = this.name;
   this.state.awaiting = true;
   const self = this;
 
@@ -245,10 +245,11 @@ const flows = {
       addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
       clearFlowState();
       showTopicButtons();
-      self.reset();
+      self.reset(); // her fjerner vi activeFlow
     }
   });
 },
+
 
 
   next() {
@@ -347,13 +348,13 @@ const flows = {
     return true;
   },
 
-  reset() {
-    this.progress = 0;
-    this.state = { awaiting: false };
-    this.answers = {};
-    activeFlow = null;
-    persistFlowState(this);
-  }
+  reset(clearActive = true) {
+  this.progress = 0;
+  this.state = { awaiting: false };
+  this.answers = {};
+  if (clearActive) activeFlow = null;
+  persistFlowState(this);
+}
 }
 };
 
