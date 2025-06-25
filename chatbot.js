@@ -52,25 +52,6 @@ function removeTypingIndicator() {
   if (typing) typing.remove();
 }
 
-function showTopicResetButton() {
-  if (document.getElementById('reset-topic')) return;
-
-  const button = document.createElement('button');
-  button.id = 'sticky-reset';
-  button.innerText = '🔁 Skift emne';
-  button.className = 'reset-button';
-  button.onclick = () => {
-    userMessageCount = 0;
-    topicChosen = false;
-    button.remove();
-    addMessage('bot', '🧠 Klar til et nyt spor? Hvad vil du gerne høre om?');
-    showTopicButtons();
-  };
-
-  messagesDiv.appendChild(button);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
 function resetTopicFlow() {
   userMessageCount = 0;
   topicChosen = false;
@@ -185,10 +166,7 @@ async function handleUserInput() {
     const data = await response.json();
     removeTypingIndicator();
     addMessage('bot', data.reply);
-
-    if (userMessageCount === 3 || userMessageCount === 6) {
-      setTimeout(showTopicResetButton, 1000);
-    }
+    
   } catch (error) {
     removeTypingIndicator();
     addMessage('bot', "Beklager, noget gik galt. Prøv igen senere.");
