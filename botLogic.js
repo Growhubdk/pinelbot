@@ -348,9 +348,9 @@ const flows = {
 function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
 
-  // 🔄 Beskyt mod gentagelse af aktivt flow
+  // 🔄 Beskyt mod gentagelse hvis brugeren allerede er i et flow og nævner det igen
   const flowAlias = {
-    kontakt: ["kontakt", "kontakte", "kontaktes", "i kontakt", "snakke med", "tale med"],
+    kontakt: ["kontakt", "kontakte", "kontaktes", "i kontakt", "snakke med", "tale med", "carsten", "personlig sparring", "blive kontaktet"],
     automation: ["automatisering", "automatisere", "effektivisere", "gentagne opgaver"],
     aiTest: ["ai test", "ai-parathed", "paratheds-test", "klar til ai", "vi er klar"],
     marketing: ["marketing", "kampagne", "annoncering", "leads", "mailchimp", "google ads", "sociale medier"],
@@ -362,6 +362,18 @@ function handleBotLogic(userInput) {
       addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
       return true;
     }
+  }
+
+  // ✅ Hvis brugeren tydeligt vil i kontakt med Carsten uanset aktivt flow
+  const kontaktOrd = ["kontakt", "carsten", "blive kontaktet", "snakke med", "personlig sparring", "tage kontakt"];
+  if (kontaktOrd.some(k => input.includes(k))) {
+    if (activeFlow === "kontakt") {
+      addMessage('bot', "Bare rolig – vi er allerede i gang med at få dig i kontakt med Carsten 😊");
+      return true;
+    }
+    activeFlow = "kontakt";
+    flows.kontakt.start();
+    return true;
   }
 
   // 💬 Behandl aktivt flow
