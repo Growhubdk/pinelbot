@@ -233,12 +233,12 @@ const flows = {
     "jeg vil i kontakt", "jeg vil gerne i kontakt med carsten"
   ],
   progress: 0,
-  state: {},
+  state: { awaiting: false },
   answers: {},
 
   start() {
     this.reset();
-    activeFlow = this.name; // 🔄 Marker flow som aktivt
+    activeFlow = this.name;
     this.state.awaiting = true;
 
     addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
@@ -246,6 +246,7 @@ const flows = {
       { label: "✅ Ja tak", value: "ja" },
       { label: "🔙 Nej, ikke lige nu", value: "nej" }
     ], (val) => {
+      this.state.awaiting = false;
       if (val === "ja") {
         this.progress = 1;
         this.next();
@@ -260,10 +261,12 @@ const flows = {
 
   next() {
     this.state.awaiting = true;
+
     switch (this.progress) {
       case 1:
         addMessage('bot', "Hvad hedder du?");
         waitForUserInput((name) => {
+          this.state.awaiting = false;
           if (!name || name.trim().length < 2) {
             addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
             this.next();
@@ -279,6 +282,7 @@ const flows = {
       case 2:
         addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
         waitForUserInput((email) => {
+          this.state.awaiting = false;
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(email)) {
             addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
@@ -295,6 +299,7 @@ const flows = {
       case 3:
         addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
         waitForUserInput((msg) => {
+          this.state.awaiting = false;
           if (!msg || msg.trim().length < 10) {
             addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
             this.next();
@@ -329,24 +334,21 @@ const flows = {
   handle(input) {
     const lower = input.toLowerCase();
 
-    // Hvis flow er på pause og brugeren skriver noget matchende – start det op
     if (this.progress === 0 && (["ja", "ja tak"].includes(lower) || this.triggers.some(trigger => lower.includes(trigger)))) {
       this.progress = 1;
       this.next();
       return true;
     }
 
-    // Hvis vi venter på et brugersvar, vent
     if (this.state.awaiting) return true;
 
-    // Hvis vi er klar til næste trin, fortsæt flowet
     this.next();
     return true;
   },
 
   reset() {
     this.progress = 0;
-    this.state = {};
+    this.state = { awaiting: false };
     this.answers = {};
     activeFlow = null;
     persistFlowState(this);
