@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({ name, email, message })
     });
 
-    const result = await response.json();
+    const result = await response.text();
     return res.status(200).json({ status: 'success', result });
   } catch (error) {
     console.error("Webhook-fejl:", error);
