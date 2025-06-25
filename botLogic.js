@@ -1,3 +1,4 @@
+// === GLOBAL STATE ===
 let activeFlow = null;
 
 function addContactButton() {
@@ -9,7 +10,7 @@ function addContactButton() {
   contactBtn.className = 'option-button';
   contactBtn.onclick = () => {
     wrapper.remove();
-    activeFlow = "kontakt";      // Start kontakt flowet
+    activeFlow = "kontakt";
     flows.kontakt.start();
   };
 
@@ -37,7 +38,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -53,7 +53,6 @@ const flows = {
           : score === 2
           ? "🤔 I har potentiale – måske starte småt."
           : "🧭 En snak kunne være godt for at komme i gang.";
-
         addMessage('bot', `Tak for dine svar 🙌 ${result} Vil du have et konkret forslag baseret på dine svar?`);
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
@@ -88,7 +87,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -104,12 +102,10 @@ const flows = {
           : score === 2
           ? "🔍 Der er noget at hente – start småt."
           : "📌 Det lyder ikke som et akut behov lige nu.";
-
         addMessage('bot', `${result} Skal jeg vise et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -140,7 +136,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -156,12 +151,10 @@ const flows = {
           : score === 2
           ? "🔍 Vi kan starte med fx e-mails eller lead flows."
           : "🧭 Vi kan tage en snak og finde en god indgang.";
-
         addMessage('bot', `${result} Vil du se et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -192,7 +185,6 @@ const flows = {
         addMessage('bot', "Skriv venligst 'ja' eller 'nej' 🙂");
         return true;
       }
-
       this.answers.push(normalized);
       this.progress++;
       persistFlowState(this);
@@ -208,12 +200,10 @@ const flows = {
           : score === 2
           ? "🔍 Vi kan starte med én rapport og se værdien."
           : "🧭 Det lyder ikke som et behov lige nu – måske senere.";
-
         addMessage('bot', `${result} Skal jeg vise et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
         this.reset();
       }
-
       return true;
     },
     reset() {
@@ -228,25 +218,19 @@ const flows = {
   kontakt: {
   name: "kontakt",
   triggers: [
-    "kontakt", "kontakte", "kontaktes", "i kontakt", "kontakt carsten",
-    "snakke med", "tale med", "jeg vil gerne kontaktes",
-    "jeg vil i kontakt", "jeg vil gerne i kontakt med carsten"
+    "kontakt", "jeg vil gerne kontaktes", "kontakt mig", "personlig sparring", "jeg vil i kontakt", "carsten", "snakke med"
   ],
   progress: 0,
-  state: { awaiting: false },
+  state: {},
   answers: {},
 
   start() {
     this.reset();
-    activeFlow = this.name;
-    this.state.awaiting = true;
-
     addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
     showOptions([
       { label: "✅ Ja tak", value: "ja" },
       { label: "🔙 Nej, ikke lige nu", value: "nej" }
     ], (val) => {
-      this.state.awaiting = false;
       if (val === "ja") {
         this.progress = 1;
         this.next();
@@ -260,10 +244,9 @@ const flows = {
   },
 
   next() {
-    this.state.awaiting = true;
-
     switch (this.progress) {
       case 1:
+        this.state.awaiting = true;
         addMessage('bot', "Hvad hedder du?");
         waitForUserInput((name) => {
           this.state.awaiting = false;
@@ -280,6 +263,7 @@ const flows = {
         break;
 
       case 2:
+        this.state.awaiting = true;
         addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
         waitForUserInput((email) => {
           this.state.awaiting = false;
@@ -297,6 +281,7 @@ const flows = {
         break;
 
       case 3:
+        this.state.awaiting = true;
         addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
         waitForUserInput((msg) => {
           this.state.awaiting = false;
@@ -322,7 +307,6 @@ const flows = {
             message: this.answers.message
           })
         });
-
         addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
         clearFlowState();
         showTopicButtons();
@@ -334,29 +318,28 @@ const flows = {
   handle(input) {
     const lower = input.toLowerCase();
 
-    if (this.progress === 0 && (["ja", "ja tak"].includes(lower) || this.triggers.some(trigger => lower.includes(trigger)))) {
+    // Start flow hvis bruger skriver kontakt-relateret i første omgang
+    if (this.progress === 0 && (["ja", "ja tak"].includes(lower) || this.triggers.some(t => lower.includes(t)))) {
       this.progress = 1;
       this.next();
       return true;
     }
 
+    // Afvent brugersvar ved trin 1-3
     if (this.state.awaiting) return true;
 
-    this.next();
     return true;
   },
 
   reset() {
     this.progress = 0;
-    this.state = { awaiting: false };
+    this.state = {};
     this.answers = {};
     activeFlow = null;
     persistFlowState(this);
   }
 }
 };
-
-
 
 
 // === Main logic handler ===
@@ -373,13 +356,12 @@ function handleBotLogic(userInput) {
   };
 
   if (activeFlow && flows[activeFlow]?.progress > 0) {
-  const keywords = flowAlias[activeFlow] || [];
-  if (keywords.some(k => input.includes(k))) {
-    addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
-    return true;
+    const keywords = flowAlias[activeFlow] || [];
+    if (keywords.some(k => input.includes(k))) {
+      addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
+      return true;
+    }
   }
-}
-
 
   // ✅ Hvis brugeren tydeligt vil i kontakt med Carsten uanset aktivt flow
   const kontaktOrd = ["kontakt", "carsten", "blive kontaktet", "snakke med", "personlig sparring", "tage kontakt"];
@@ -431,7 +413,6 @@ function handleBotLogic(userInput) {
 
   return false;
 }
-
 
 // === Gem og hent samtalestatus ===
 function persistFlowState(flow) {
@@ -503,3 +484,5 @@ function showResumeButtons() {
   wrapper.appendChild(noBtn);
   document.getElementById('messages').appendChild(wrapper);
 }
+
+
