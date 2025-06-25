@@ -56,7 +56,7 @@ function showTopicResetButton() {
   if (document.getElementById('reset-topic')) return;
 
   const button = document.createElement('button');
-  button.id = 'reset-topic';
+  button.id = 'sticky-reset';
   button.innerText = '🔁 Skift emne';
   button.className = 'reset-button';
   button.onclick = () => {
