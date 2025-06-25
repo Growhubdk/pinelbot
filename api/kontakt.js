@@ -17,18 +17,20 @@ export default async function handler(req, res) {
   const { name, email, message } = req.body;
 
   try {
-    const webhookUrl = "https://script.google.com/macros/s/AKfycbw0wE4-Zvls-FZaUapRbwyNJjjeariWaWhMtvmOvCOijVeQfAoQhf8oNotXW0GT37AI/exec";
+  const webhookUrl = "https://script.google.com/macros/s/AKfycbw0wE4-Zvls-FZaUapRbwyNJjjeariWaWhMtvmOvCOijVeQfAoQhf8oNotXW0GT37AI/exec";
 
-    const response = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, message })
-    });
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, message })
+  });
 
-    const result = await response.text();
-    return res.status(200).json({ status: 'success', result });
-  } catch (error) {
-    console.error("Webhook-fejl:", error);
-    return res.status(500).json({ error: 'Webhook-fejl' });
-  }
+  const raw = await response.text();
+  console.log("Webhook svar:", raw); // 🧪 debug
+  return res.status(200).json({ status: 'success', raw });
+
+} catch (error) {
+  console.error("Webhook-fejl:", error);
+  return res.status(500).json({ error: 'Webhook-fejl' });
+}
 }
