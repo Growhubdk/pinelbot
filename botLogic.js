@@ -228,25 +228,27 @@ const flows = {
   answers: {},
 
   start() {
-    this.reset();
-    activeFlow = this.name;
-    this.state.awaiting = true;
-    addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
-    showOptions([
-      { label: "✅ Ja tak", value: "ja" },
-      { label: "🔙 Nej, ikke lige nu", value: "nej" }
-    ], (val) => {
-      if (val === "ja") {
-        this.progress = 1;
-        this.next();
-      } else {
-        addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
-        clearFlowState();
-        showTopicButtons();
-        this.reset();
-      }
-    });
-  },
+  this.reset();
+  this.state.awaiting = true;
+  const self = this;
+
+  addMessage('bot', "📞 Vil du gerne have personlig AI-sparring?");
+  showOptions([
+    { label: "✅ Ja tak", value: "ja" },
+    { label: "🔙 Nej, ikke lige nu", value: "nej" }
+  ], (val) => {
+    if (val === "ja") {
+      self.progress = 1;
+      self.next();
+    } else {
+      addMessage('bot', "Alt godt – sig til, hvis du får brug for sparring!");
+      clearFlowState();
+      showTopicButtons();
+      self.reset();
+    }
+  });
+},
+
 
   next() {
     this.state.awaiting = true;
