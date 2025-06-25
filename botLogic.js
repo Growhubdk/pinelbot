@@ -314,7 +314,7 @@ const flows = {
       break;
 
     case 4:
-  fetch("https://script.google.com/macros/s/AKfycbw0wE4-Zvls-FZaUapRbwyNJjjeariWaWhMtvmOvCOijVeQfAoQhf8oNotXW0GT37AI/exec", {
+  fetch("/api/kontakt", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -323,16 +323,20 @@ const flows = {
       message: this.answers.message
     })
   })
-  .then(res => res.text())
-  .then(txt => console.log("✅ Webhook response:", txt))
-  .catch(err => console.error("❌ Webhook error:", err));
+  .then(res => res.json())
+  .then(data => {
+    console.log("✅ Webhook response:", data);
+    addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+    clearFlowState();
+    showTopicButtons();
+    this.reset();
+  })
+  .catch(err => {
+    console.error("❌ Webhook error:", err);
+    addMessage('bot', "⚠️ Noget gik galt – prøv igen senere eller send os en mail.");
+  });
 
-
-      addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
-      clearFlowState();
-      showTopicButtons();
-      this.reset();
-      break;
+  break;
   }
 },
 
