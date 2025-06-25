@@ -251,68 +251,84 @@ const flows = {
 
 
   next() {
-    this.state.awaiting = true;
-    switch (this.progress) {
-      case 1:
+  switch (this.progress) {
+    case 1:
+      setTimeout(() => {
+        this.state.awaiting = true;
         addMessage('bot', "Hvad hedder du?");
         waitForUserInput((name) => {
           if (!name || name.trim().length < 2) {
             addMessage('bot', "⚠️ Skriv venligst dit navn – bare fornavn er fint 😊");
+            this.progress = 1;
             this.next();
             return;
           }
           this.answers.name = name.trim();
           this.progress = 2;
+          persistFlowState(this);
           this.next();
         });
-        break;
+      }, 300);
+      break;
 
-      case 2:
+    case 2:
+      setTimeout(() => {
+        this.state.awaiting = true;
         addMessage('bot', "Og hvilken e-mail kan vi kontakte dig på?");
         waitForUserInput((email) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(email)) {
             addMessage('bot', "⚠️ Det ligner ikke en gyldig e-mailadresse. Prøv igen 🙏");
+            this.progress = 2;
             this.next();
             return;
           }
           this.answers.email = email.trim();
           this.progress = 3;
+          persistFlowState(this);
           this.next();
         });
-        break;
+      }, 300);
+      break;
 
-      case 3:
+    case 3:
+      setTimeout(() => {
+        this.state.awaiting = true;
         addMessage('bot', "Er der noget specifikt, du gerne vil spørge om?");
         waitForUserInput((msg) => {
           if (!msg || msg.trim().length < 10) {
             addMessage('bot', "✏️ Skriv gerne lidt mere, så vi kan hjælpe bedst muligt 🙏");
+            this.progress = 3;
             this.next();
             return;
           }
           this.answers.message = msg.trim();
           this.progress = 4;
+          persistFlowState(this);
           this.next();
         });
-        break;
+      }, 300);
+      break;
 
-      case 4:
-        fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: this.answers.name,
-            email: this.answers.email,
-            message: this.answers.message
-          })
-        });
-        addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
-        clearFlowState();
-        showTopicButtons();
-        this.reset();
-        break;
-    }
-  },
+    case 4:
+      fetch("https://script.google.com/macros/s/AKfycbzjTRUHX-kBXVOVil85XaTH555CqwH4hx31B7z-7NlXSgXGT4xQx5TUd-4Uw83q7X3g/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: this.answers.name,
+          email: this.answers.email,
+          message: this.answers.message
+        })
+      });
+
+      addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+      clearFlowState();
+      showTopicButtons();
+      this.reset();
+      break;
+  }
+},
+
 
   handle(input) {
     const lower = input.toLowerCase();

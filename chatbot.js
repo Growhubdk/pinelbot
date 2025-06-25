@@ -141,7 +141,11 @@ async function handleUserInput() {
 
   if (!topicChosen) topicChosen = true;
 
-  if (onUserInput(userText)) return;
+  if (awaitingUserInputCallback && activeFlow && flows[activeFlow]) {
+  flows[activeFlow].state.awaiting = false;
+}
+
+if (onUserInput(userText)) return;
 
   if (typeof handleBotLogic === 'function') {
     const handled = handleBotLogic(userText);
