@@ -352,12 +352,14 @@ function handleBotLogic(userInput) {
     dataAnalysis: ["data", "analyse", "dashboard", "rapporter", "kpi", "excel", "crm"]
   };
 
-  for (const [flowName, keywords] of Object.entries(flowAlias)) {
-    if (activeFlow === flowName && keywords.some(k => input.includes(k))) {
-      addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
-      return true;
-    }
+  if (activeFlow && flows[activeFlow]?.progress > 0) {
+  const keywords = flowAlias[activeFlow] || [];
+  if (keywords.some(k => input.includes(k))) {
+    addMessage('bot', "Bare rolig – vi er allerede i gang med det emne 😊");
+    return true;
   }
+}
+
 
   // ✅ Hvis brugeren tydeligt vil i kontakt med Carsten uanset aktivt flow
   const kontaktOrd = ["kontakt", "carsten", "blive kontaktet", "snakke med", "personlig sparring", "tage kontakt"];
