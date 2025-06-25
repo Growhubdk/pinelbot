@@ -342,6 +342,7 @@ const flows = {
 // === Main logic handler ===
 function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
+  console.log("🔍 ActiveFlow:", activeFlow, "| Input:", input);
 
   // 🔄 Beskyt mod gentagelse hvis brugeren allerede er i et flow og nævner det igen
   const flowAlias = {
