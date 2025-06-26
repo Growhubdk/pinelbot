@@ -34,32 +34,10 @@ function onUserInput(text) {
 function addMessage(sender, text) {
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
-
-  if (sender === 'bot') {
-    const wrapper = document.createElement('div');
-    wrapper.style.display = 'flex';
-    wrapper.style.alignItems = 'center';
-
-    const logo = document.createElement('img');
-    logo.src = '/pinelbot.png';
-    logo.alt = 'PinelBot';
-    logo.className = 'bot-logo';
-
-    const textElem = document.createElement('div');
-    textElem.innerHTML = text;
-
-    wrapper.appendChild(logo);
-    wrapper.appendChild(textElem);
-    msg.appendChild(wrapper);
-  } else {
-    msg.innerHTML = text;
-  }
-
+  msg.innerHTML = text;
   messagesDiv.appendChild(msg);
   scrollToBottom();
 }
-
-
 
 function showTypingIndicator() {
   const typing = document.createElement('div');
