@@ -34,10 +34,22 @@ function onUserInput(text) {
 function addMessage(sender, text) {
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
-  msg.innerHTML = text;
+
+  if (sender === 'bot') {
+    const logo = document.createElement('img');
+    logo.src = '/Pinelchatbot.png';
+    logo.className = 'bot-logo';
+    msg.appendChild(logo);
+  }
+
+  const textElem = document.createElement('div');
+  textElem.innerHTML = text;
+  msg.appendChild(textElem);
+
   messagesDiv.appendChild(msg);
   scrollToBottom();
 }
+
 
 function showTypingIndicator() {
   const typing = document.createElement('div');

@@ -157,4 +157,10 @@ body {
   background-color: #ddd;
 }
 
+.bot-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
 
