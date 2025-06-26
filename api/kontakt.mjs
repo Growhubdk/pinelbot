@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     // 2. Send e-mail til dig selv
     await resend.emails.send({
       from: 'PinelBot <no-reply@onresend.com>',
-      to: 'kontakt@pinel.dk', // ⬅️ SKIFT TIL DIN ADRESSE
+      to: 'carstenmadsen84@gmail.com', // ⬅️ SKIFT TIL DIN ADRESSE
       subject: '🆕 Ny kontakt fra PinelBot',
       html: `
         <h2>Ny besked fra PinelBot</h2>
