@@ -326,7 +326,7 @@ const flows = {
   .then(res => res.text()) // 👈 brug .text() fordi Google Scripts returnerer rå tekst som "OK"
   .then(txt => {
     console.log("✅ Webhook response:", txt);
-    addMessage('bot', `✅ Tak, ${this.answers.name}! Vi vender tilbage meget snart.`);
+    addMessage('bot', `Tak for din besked, ${this.answers.name} 😊\nJeg har givet den videre til Carsten hos Pinel – han tager den derfra.\n\nDu hører fra os på mail snarest muligt.\n\nBedste hilsner\nPinelbotten 🤖`);
     clearFlowState();
     showTopicButtons();
     this.reset();
