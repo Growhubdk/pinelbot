@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 
     // 2. Send e-mail til dig selv
     const mailRes = await resend.emails.send({
-  from: 'PinelBot <no-reply@onresend.com>',
+  from: 'noreply@resend.dev',
   to: 'carstenmadsen84@gmail.com',
   subject: '🆕 Ny kontakt fra PinelBot',
   html: `
@@ -60,6 +60,7 @@ export default async function handler(req, res) {
     <p>${message}</p>
   `
 });
+
 
 console.log('📬 Resend response:', mailRes);
 
