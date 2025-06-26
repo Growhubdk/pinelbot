@@ -61,6 +61,7 @@ export default async function handler(req, res) {
       `
     });
 
+    console.log('📬 Resend response:', mailRes);
     console.log('✅ Airtable + e-mail sendt');
     res.status(200).json({ message: 'Kontakt gemt og e-mail sendt', airtableId: data.records[0].id });
   } catch (err) {
