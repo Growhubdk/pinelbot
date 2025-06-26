@@ -48,20 +48,21 @@ export default async function handler(req, res) {
     }
 
     // 2. Send e-mail til dig selv
-    await resend.emails.send({
-      from: 'PinelBot <no-reply@onresend.com>',
-      to: 'carstenmadsen84@gmail.com', // ⬅️ SKIFT TIL DIN ADRESSE
-      subject: '🆕 Ny kontakt fra PinelBot',
-      html: `
-        <h2>Ny besked fra PinelBot</h2>
-        <p><strong>Navn:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Besked:</strong></p>
-        <p>${message}</p>
-      `
-    });
+    const mailRes = await resend.emails.send({
+  from: 'PinelBot <no-reply@onresend.com>',
+  to: 'carstenmadsen84@gmail.com',
+  subject: '🆕 Ny kontakt fra PinelBot',
+  html: `
+    <h2>Ny besked fra PinelBot</h2>
+    <p><strong>Navn:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Besked:</strong></p>
+    <p>${message}</p>
+  `
+});
 
-    console.log('📬 Resend response:', mailRes);
+console.log('📬 Resend response:', mailRes);
+
     console.log('✅ Airtable + e-mail sendt');
     res.status(200).json({ message: 'Kontakt gemt og e-mail sendt', airtableId: data.records[0].id });
   } catch (err) {
