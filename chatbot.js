@@ -36,16 +36,20 @@ function addMessage(sender, text) {
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
 
   if (sender === 'bot') {
-    // Tilføj et billede (logo) før teksten
-    const logo = `<img src="/Pinelchatbot.png" alt="Pinelbot" class="bot-logo"><br>`;
-    msg.innerHTML = logo + text;
-  } else {
-    msg.innerHTML = text;
+    const logo = document.createElement('img');
+    logo.src = '/Pinelchatbot.png'; // Skal matche filnavnet i public/
+    logo.className = 'bot-logo';
+    msg.appendChild(logo);
   }
+
+  const textElem = document.createElement('div');
+  textElem.innerHTML = text;
+  msg.appendChild(textElem);
 
   messagesDiv.appendChild(msg);
   scrollToBottom();
 }
+
 
 
 function showTypingIndicator() {
