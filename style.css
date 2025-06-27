@@ -122,7 +122,7 @@ body, html {
 
 #sticky-reset {
   position: fixed;
-  bottom: 150px; /* hævet fra inputfeltet */
+  bottom: 130px; /* hævet fra inputfeltet */
   right: 20px;
   background-color: #F5F4F2;
   border: none;
