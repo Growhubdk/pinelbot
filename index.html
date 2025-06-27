@@ -8,13 +8,12 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: transparent;
-  font-family: 'Quicksand', sans-serif;
-}
-
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: transparent;
+      font-family: 'Quicksand', sans-serif;
+    }
 
     #chatbox {
       height: 100vh;
@@ -41,45 +40,64 @@
     }
 
     #send-button {
-  padding: 12px 16px;
-  background-color: #FFE070;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+      padding: 12px 16px;
+      background-color: #FFE070;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     #send-button:hover {
-  background-color: #e6ca4f;
-}
+      background-color: #ffdc58;
+    }
 
     #send-button svg {
       width: 20px;
       height: 20px;
-      fill: rgb(0, 0, 0);
+      fill: black;
     }
 
-    /* 🔁 Fast Skift emne-knap */
     #sticky-reset {
-  position: fixed;
-  bottom: 100px; /* 🚀 Hævet fra bunden */
-  right: 20px;
-  background-color: #F5F4F2;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background-color 0.2s ease;
-  z-index: 1000;
-}
-
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      background-color: #f0f0f0;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+    }
 
     #sticky-reset:hover {
       background-color: #ddd;
+    }
+
+    /* Scroll-to-top button style */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 140px;
+      right: 20px;
+      display: none;
+      background-color: #FFE070;
+      color: black;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transition: background-color 0.2s ease;
+    }
+
+    #scrollTopBtn:hover {
+      background-color: #ffdc58;
     }
   </style>
 </head>
@@ -96,12 +114,17 @@
     </div>
   </div>
 
-  <!-- 🔁 Fast Skift emne-knap -->
+  <!-- Fast skift emne-knap -->
   <button id="sticky-reset" onclick="resetTopicFlow()">🔁 Skift emne</button>
+
+  <!-- Scroll to top-knap -->
+  <button id="scrollTopBtn" title="Til toppen">↑</button>
 
   <script src="chatbot.js"></script>
   <script src="botLogic.js"></script>
+
   <script>
+    // Send-knap
     document.getElementById("send-button").addEventListener("click", () => {
       const input = document.getElementById("user-input");
       const message = input.value.trim();
@@ -109,6 +132,22 @@
         handleUserMessage(message);
         input.value = "";
       }
+    });
+
+    // Scroll-to-top-knap funktion
+    const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+    window.addEventListener("scroll", () => {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollTopBtn.style.display = "block";
+      } else {
+        scrollTopBtn.style.display = "none";
+      }
+    });
+
+    scrollTopBtn.addEventListener("click", () => {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     });
   </script>
 </body>

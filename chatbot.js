@@ -64,10 +64,16 @@ function showTypingIndicator() {
   const typing = document.createElement('div');
   typing.className = 'bubble bot-bubble typing';
   typing.id = 'typing-indicator';
-  typing.innerText = 'PinelBot skriver...';
+
+  const dots = document.createElement('span');
+  dots.className = 'typing-dots';
+  dots.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+
+  typing.appendChild(dots);
   messagesDiv.appendChild(typing);
   scrollToBottom();
 }
+
 
 function removeTypingIndicator() {
   const typing = document.getElementById('typing-indicator');

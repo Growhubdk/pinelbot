@@ -3,8 +3,9 @@ body, html {
   padding: 0;
   height: 100%;
   font-family: 'Quicksand', sans-serif;
-  background-color: #fdfaf4;
+  background: linear-gradient(to bottom right, #fffefb, #f5f4f2); /* ☀️ varm gradient */
 }
+
 
 #chatbox {
   height: 100vh;
@@ -138,9 +139,53 @@ body, html {
   background-color: #ddd;
 }
 
+/* 🔁 ANIMERET TYPING “...” */
+.typing-dots span {
+  display: inline-block;
+  animation: blink 1.4s infinite;
+  font-size: 20px;
+  color: #999;
+  margin-right: 2px;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
 .bot-wrapper {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin: 8px 0;
+}
+
+/* ⬆️ SCROLL TO TOP-KNAP */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 140px;
+  right: 20px;
+  display: none;
+  background-color: #FFE070;
+  color: black;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transition: background-color 0.2s ease;
+}
+
+#scrollTopBtn:hover {
+  background-color: #ffdc58;
 }
