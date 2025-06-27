@@ -34,10 +34,31 @@ function onUserInput(text) {
 function addMessage(sender, text) {
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'bubble user-bubble' : 'bubble bot-bubble';
-  msg.innerHTML = text;
+
+  if (sender === 'bot') {
+    const wrapper = document.createElement('div');
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'flex-start';
+
+    const logo = document.createElement('img');
+    logo.src = 'pinelchatbot.png'; // skal ligge i projektets rod
+    logo.alt = 'PinelBot';
+    logo.className = 'bot-logo';
+
+    const textElem = document.createElement('div');
+    textElem.innerHTML = text;
+
+    wrapper.appendChild(logo);
+    wrapper.appendChild(textElem);
+    msg.appendChild(wrapper);
+  } else {
+    msg.innerHTML = text;
+  }
+
   messagesDiv.appendChild(msg);
   scrollToBottom();
 }
+
 
 function showTypingIndicator() {
   const typing = document.createElement('div');
