@@ -143,8 +143,8 @@ body, html {
 .typing-dots span {
   display: inline-block;
   animation: blink 1.4s infinite;
-  font-size: 20px;
-  color: #999;
+  font-size: 25px;
+  color: #666;
   margin-right: 2px;
 }
 
