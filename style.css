@@ -40,11 +40,11 @@ body, html {
 }
 
 .bot-bubble {
-  background-color: #FFE070;
+  background-color: #F5F4F2;
   color: #333;
   align-self: flex-start;
   border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .input-wrapper {
@@ -62,7 +62,7 @@ body, html {
 
 #send-button {
   padding: 0 20px;
-  background-color: #1e8b64;
+  background-color: #FFE070;
   border: none;
   cursor: pointer;
   display: flex;
@@ -71,17 +71,17 @@ body, html {
 }
 
 #send-button:hover {
-  background-color: #166a4d;
+  background-color: #ffdc58;
 }
 
 #send-button svg {
   width: 20px;
   height: 20px;
-  fill: white;
+  fill: black;
 }
 
 .topic-button, .option-button {
-  background-color: #FFE070;
+  background-color: #F5F4F2;
   border: none;
   padding: 10px 14px;
   margin: 4px;
@@ -92,7 +92,7 @@ body, html {
 }
 
 .topic-button:hover, .option-button:hover {
-  background-color: #ffdc58;
+  background-color: #eae9e7;
 }
 
 .option-container {
