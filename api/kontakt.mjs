@@ -49,8 +49,8 @@ export default async function handler(req, res) {
 
     // 2. Send e-mail til dig selv
     const mailRes = await resend.emails.send({
-  from: 'noreply@resend.dev',
-  to: 'kontakt@pinel.dk',
+  from: 'PinelBot <kontakt@pinel.dk>', // 👈 brug din verificerede afsender
+  to: 'kontakt@pinel.dk', // eller en anden modtager
   subject: '🆕 Ny kontakt fra PinelBot',
   html: `
     <h2>Ny besked fra PinelBot</h2>
