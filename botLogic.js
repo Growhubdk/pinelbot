@@ -368,6 +368,63 @@ const flows = {
 }
 };
 
+// === 📈 Beregningsflow – PinelBot Calculator ===
+async function startCalculatorFlow() {
+  addMessage('bot', "Lad os regne på det 📊 Jeg stiller dig nogle hurtige spørgsmål.");
+
+  const task = await waitForUserText("1️⃣ Hvilken opgave vil du gerne spare tid på?");
+  const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen?"));
+  const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det?"));
+  const role = await waitForUserChoice("4️⃣ Hvem laver opgaven?", ["Mig selv", "En kollega", "En ekstern"]);
+  const value = await waitForUserChoice("5️⃣ Hvad ville gevinsten være?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
+
+  const hourlyRate = role === "Mig selv" ? 600 : role === "En kollega" ? 400 : 700;
+  const monthlyHours = (frequency * duration * 4) / 60;
+  const monthlyCost = Math.round(monthlyHours * hourlyRate);
+  const yearlyCost = monthlyCost * 12;
+
+  addMessage('bot', `📊 Du bruger ca. ${monthlyHours.toFixed(1)} timer/mdr – svarende til ${monthlyCost.toLocaleString()} kr./mdr og ${yearlyCost.toLocaleString()} kr./år.`);
+
+  const wantsPdf = await waitForUserChoice("Vil du have det som en pæn PDF på mail?", ["Ja tak", "Nej tak"]);
+if (wantsPdf === "Ja tak") {
+  const name = await waitForUserText("📧 Dit navn:");
+  const email = await waitForUserText("📨 Din e-mail:");
+
+  fetch("https://pinel-pdf-server.onrender.com/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      navn: name,
+      email,
+      opgave: task,
+      frekvens: frequency,
+      varighed: duration,
+      rolle: role,
+      gevinst: value,
+      tid_pr_mdr: monthlyHours,
+      pris_pr_mdr: monthlyCost,
+      pris_pr_år: yearlyCost
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        addMessage('bot', "✅ Tak 🙌 PDF’en er på vej til din indbakke.");
+      } else {
+        addMessage('bot', "🚨 Der opstod en fejl med at sende PDF’en. Prøv igen senere.");
+      }
+    })
+    .catch(err => {
+      console.error("Fejl ved PDF-forsendelse:", err);
+      addMessage('bot', "⚠️ Noget gik galt. Tjek din forbindelse eller prøv igen senere.");
+    });
+} else {
+  addMessage('bot', "Helt i orden! Du kan altid vende tilbage.");
+}
+
+}
+
 
 // === Main logic handler ===
 function handleBotLogic(userInput) {
@@ -454,47 +511,6 @@ if (input.includes("beregne") || input.includes("besparelse") || input.includes(
   return false;
 }
 
-// === 📈 Beregningsflow – PinelBot Calculator ===
-async function startCalculatorFlow() {
-  addMessage('bot', "Lad os regne på det 📊 Jeg stiller dig nogle hurtige spørgsmål.");
-
-  const task = await waitForUserText("1️⃣ Hvilken opgave vil du gerne spare tid på?");
-  const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen?"));
-  const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det?"));
-  const role = await waitForUserChoice("4️⃣ Hvem laver opgaven?", ["Mig selv", "En kollega", "En ekstern"]);
-  const value = await waitForUserChoice("5️⃣ Hvad ville gevinsten være?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
-
-  const hourlyRate = role === "Mig selv" ? 600 : role === "En kollega" ? 400 : 700;
-  const monthlyHours = (frequency * duration * 4) / 60;
-  const monthlyCost = Math.round(monthlyHours * hourlyRate);
-  const yearlyCost = monthlyCost * 12;
-
-  addMessage('bot', `📊 Du bruger ca. ${monthlyHours.toFixed(1)} timer/mdr – svarende til ${monthlyCost.toLocaleString()} kr./mdr og ${yearlyCost.toLocaleString()} kr./år.`);
-
-  const wantsPdf = await waitForUserChoice("Vil du have det som en pæn PDF på mail?", ["Ja tak", "Nej tak"]);
-  if (wantsPdf === "Ja tak") {
-    const name = await waitForUserText("📧 Dit navn:");
-    const email = await waitForUserText("📨 Din e-mail:");
-
-    submitFormToAirtable({
-      navn: name,
-      email,
-      type: "Calculator-lead",
-      opgave: task,
-      frekvens: frequency,
-      varighed: duration,
-      rolle: role,
-      gevinst: value,
-      tid_pr_mdr: monthlyHours,
-      pris_pr_mdr: monthlyCost,
-      pris_pr_år: yearlyCost
-    });
-
-    addMessage('bot', "Tak 🙌 PDF’en er på vej til din indbakke.");
-  } else {
-    addMessage('bot', "Helt i orden! Du kan altid vende tilbage.");
-  }
-}
 
 
 
