@@ -31,6 +31,39 @@ function onUserInput(text) {
   return false;
 }
 
+function waitForUserText(promptText) {
+  return new Promise((resolve) => {
+    addMessage('bot', promptText);
+    waitForUserInput((input) => {
+      resolve(input);
+    });
+  });
+}
+
+function waitForUserChoice(promptText, options) {
+  return new Promise((resolve) => {
+    addMessage('bot', promptText);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'option-container';
+
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-button';
+      btn.innerText = opt;
+      btn.onclick = () => {
+        wrapper.remove();
+        addMessage('user', opt);
+        resolve(opt);
+      };
+      wrapper.appendChild(btn);
+    });
+
+    messagesDiv.appendChild(wrapper);
+    scrollToBottom();
+  });
+}
+
 function addMessage(sender, text) {
   const msg = document.createElement('div');
 

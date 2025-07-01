@@ -427,7 +427,7 @@ if (wantsPdf === "Ja tak") {
 
 
 // === Main logic handler ===
-function handleBotLogic(userInput) {
+async function handleBotLogic(userInput) {
   const input = userInput.toLowerCase();
   console.log("🔍 ActiveFlow:", activeFlow, "| Input:", input);
 
