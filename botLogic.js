@@ -390,6 +390,7 @@ function handleBotLogic(userInput) {
       return true;
     }
   }
+  
 
   // ✅ Hvis brugeren tydeligt vil i kontakt med Carsten uanset aktivt flow
   const kontaktOrd = ["kontakt", "carsten", "blive kontaktet", "snakke med", "personlig sparring", "tage kontakt"];
@@ -438,6 +439,17 @@ if (kontaktOrd.some(k => input.includes(k))) {
     if (typeof addContactButton === 'function') addContactButton();
     return true;
   }
+
+  // 📈 Beregningsflow
+if (input.includes("beregne") || input.includes("besparelse") || input.includes("spare tid")) {
+  if (typeof startCalculatorFlow === 'function') {
+    startCalculatorFlow();
+    return true;
+  } else {
+    addMessage('bot', "🔧 Beregningsværktøjet er ikke aktiveret endnu.");
+    return true;
+  }
+}
 
   return false;
 }

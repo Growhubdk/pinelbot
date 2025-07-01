@@ -98,11 +98,13 @@ function resetTopicFlow() {
 
 function showTopicButtons() {
   const topics = [
-    { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
-    { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
-    { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
-    { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' }
-  ];
+  { label: '📈 Beregn besparelse', prompt: 'Jeg vil beregne, hvad jeg kan spare' },
+  { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
+  { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
+  { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
+  { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' }
+];
+
 
   const wrapper = document.createElement('div');
   wrapper.id = 'topic-buttons';
