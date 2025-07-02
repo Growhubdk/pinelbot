@@ -165,7 +165,7 @@ function showTopicButtons() {
 
 async function handleSimulatedUserInput(text) {
   if (typeof handleBotLogic === 'function') {
-    const handled = handleBotLogic(text);
+    const handled = await handleBotLogic(text); // <--- Nu med await!
     if (handled) return;
   }
 
@@ -216,7 +216,9 @@ async function handleUserInput() {
 if (onUserInput(userText)) return;
 
   if (typeof handleBotLogic === 'function') {
-    const handled = handleBotLogic(userText);
+    const handled = await handleBotLogic(userText);
+      if (handled) return;
+
     if (handled) return;
   }
 
