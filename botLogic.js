@@ -384,17 +384,21 @@ async function startCalculatorFlow() {
   const yearlyCost = monthlyCost * 12;
 
   addMessage(
-    'bot',
-    `📊 Her er din beregning:\n\n` +
-    `• Opgave: ${task}\n` +
-    `• Frekvens: ${frequency} gange/uge\n` +
-    `• Varighed: ${duration} min/gang\n` +
-    `• Rolle: ${role}\n` +
-    `• Gevinst: ${value}\n\n` +
-    `= Ca. ${monthlyHours.toFixed(1)} timer/mdr\n` +
-    `= ${monthlyCost.toLocaleString()} kr./mdr\n` +
-    `= ${yearlyCost.toLocaleString()} kr./år`
-  );
+  'bot',
+  `<div class="result-card">
+    <b>📊 Beregning:</b><br><br>
+    <b>Opgave:</b> ${task}<br>
+    <b>Frekvens:</b> ${frequency} gange/uge<br>
+    <b>Varighed:</b> ${duration} min/gang<br>
+    <b>Rolle:</b> ${role}<br>
+    <b>Gevinst:</b> ${value}<br><br>
+    <b>⏰ Tid pr. måned:</b> ${monthlyHours.toFixed(1)} timer<br>
+    <b>💸 Omkostning pr. måned:</b> ${monthlyCost.toLocaleString()} kr.<br>
+    <b>💰 Omkostning pr. år:</b> ${yearlyCost.toLocaleString()} kr.
+  </div>`
+);
+
+
 
   addMessage('bot', "Vil du gemme beregningen, kan du kopiere teksten her fra chatten. Du kan altid vende tilbage og prøve igen med andre tal!");
 }

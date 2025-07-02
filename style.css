@@ -189,3 +189,20 @@ body, html {
 #scrollTopBtn:hover {
   background-color: #ffdc58;
 }
+
+.result-card {
+  background: #fffbe9;
+  border: 1.5px solid #f6cd5b;
+  border-radius: 16px;
+  box-shadow: 0 3px 18px rgba(246,205,91,0.14);
+  padding: 20px 24px;
+  margin: 16px 0;
+  font-size: 1.07em;
+  color: #403600;
+  font-weight: 500;
+  transition: box-shadow 0.2s;
+}
+
+.result-card b {
+  color: #c99800;
+}
