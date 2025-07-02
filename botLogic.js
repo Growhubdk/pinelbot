@@ -383,47 +383,22 @@ async function startCalculatorFlow() {
   const monthlyCost = Math.round(monthlyHours * hourlyRate);
   const yearlyCost = monthlyCost * 12;
 
-  addMessage('bot', `📊 Du bruger ca. ${monthlyHours.toFixed(1)} timer/mdr – svarende til ${monthlyCost.toLocaleString()} kr./mdr og ${yearlyCost.toLocaleString()} kr./år.`);
+  addMessage(
+    'bot',
+    `📊 Her er din beregning:\n\n` +
+    `• Opgave: ${task}\n` +
+    `• Frekvens: ${frequency} gange/uge\n` +
+    `• Varighed: ${duration} min/gang\n` +
+    `• Rolle: ${role}\n` +
+    `• Gevinst: ${value}\n\n` +
+    `= Ca. ${monthlyHours.toFixed(1)} timer/mdr\n` +
+    `= ${monthlyCost.toLocaleString()} kr./mdr\n` +
+    `= ${yearlyCost.toLocaleString()} kr./år`
+  );
 
-  const wantsPdf = await waitForUserChoice("Vil du have det som en pæn PDF på mail?", ["Ja tak", "Nej tak"]);
-if (wantsPdf === "Ja tak") {
-  const name = await waitForUserText("📧 Dit navn:");
-  const email = await waitForUserText("📨 Din e-mail:");
-
-  fetch("https://pinel-pdf-server.onrender.com/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      navn: name,
-      email,
-      opgave: task,
-      frekvens: frequency,
-      varighed: duration,
-      rolle: role,
-      gevinst: value,
-      tid_pr_mdr: monthlyHours,
-      pris_pr_mdr: monthlyCost,
-      pris_pr_år: yearlyCost
-    })
-  })
-    .then(res => {
-      if (res.ok) {
-        addMessage('bot', "✅ Tak 🙌 PDF’en er på vej til din indbakke.");
-      } else {
-        addMessage('bot', "🚨 Der opstod en fejl med at sende PDF’en. Prøv igen senere.");
-      }
-    })
-    .catch(err => {
-      console.error("Fejl ved PDF-forsendelse:", err);
-      addMessage('bot', "⚠️ Noget gik galt. Tjek din forbindelse eller prøv igen senere.");
-    });
-} else {
-  addMessage('bot', "Helt i orden! Du kan altid vende tilbage.");
+  addMessage('bot', "Vil du gemme beregningen, kan du kopiere teksten her fra chatten. Du kan altid vende tilbage og prøve igen med andre tal!");
 }
 
-}
 
 
 // === Main logic handler ===
