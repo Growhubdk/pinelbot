@@ -372,36 +372,59 @@ const flows = {
 async function startCalculatorFlow() {
   addMessage('bot', "Lad os regne på det 📊 Jeg stiller dig nogle hurtige spørgsmål.");
 
+  // 1. Hent svar fra brugeren
   const task = await waitForUserText("1️⃣ Hvilken opgave vil du gerne spare tid på?");
-  const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen?"));
-  const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det?"));
-  const role = await waitForUserChoice("4️⃣ Hvem laver opgaven?", ["Mig selv", "En kollega", "En ekstern"]);
-  const value = await waitForUserChoice("5️⃣ Hvad ville gevinsten være?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
+  const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen udfører du denne opgave?"));
+  const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det hver gang?"));
+  const role = await waitForUserChoice("4️⃣ Hvem laver opgaven oftest?", ["Mig selv", "En kollega", "En ekstern"]);
+  const value = await waitForUserChoice("5️⃣ Hvad vil det vigtigste resultat være for dig?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
 
+  // 2. Beregn
   const hourlyRate = role === "Mig selv" ? 600 : role === "En kollega" ? 400 : 700;
   const monthlyHours = (frequency * duration * 4) / 60;
   const monthlyCost = Math.round(monthlyHours * hourlyRate);
   const yearlyCost = monthlyCost * 12;
 
+  // 3. Vis resultatet i et “kort”
   addMessage(
-  'bot',
-  `<div class="result-card">
-    <b>📊 Beregning:</b><br><br>
-    <b>Opgave:</b> ${task}<br>
-    <b>Frekvens:</b> ${frequency} gange/uge<br>
-    <b>Varighed:</b> ${duration} min/gang<br>
-    <b>Rolle:</b> ${role}<br>
-    <b>Gevinst:</b> ${value}<br><br>
-    <b>⏰ Tid pr. måned:</b> ${monthlyHours.toFixed(1)} timer<br>
-    <b>💸 Omkostning pr. måned:</b> ${monthlyCost.toLocaleString()} kr.<br>
-    <b>💰 Omkostning pr. år:</b> ${yearlyCost.toLocaleString()} kr.
-  </div>`
-);
+    'bot',
+    `<div class="result-card">
+      <b>📊 Din beregning:</b><br><br>
+      <b>Opgave:</b> ${task}<br>
+      <b>Frekvens:</b> ${frequency} gange/uge<br>
+      <b>Varighed:</b> ${duration} min/gang<br>
+      <b>Rolle:</b> ${role}<br>
+      <b>Gevinst:</b> ${value}<br><br>
+      <b>⏰ Tid pr. måned:</b> ${monthlyHours.toFixed(1)} timer<br>
+      <b>💸 Omkostning pr. måned:</b> ${monthlyCost.toLocaleString()} kr.<br>
+      <b>💰 Omkostning pr. år:</b> ${yearlyCost.toLocaleString()} kr.
+    </div>`
+  );
 
-
-
-  addMessage('bot', "Vil du gemme beregningen, kan du kopiere teksten her fra chatten. Du kan altid vende tilbage og prøve igen med andre tal!");
+  // 4. Inviter brugeren videre – uden at lukke samtalen ned
+  await new Promise((resolve) => {
+    showOptions([
+      { label: "Prøv med en anden opgave", value: "ny" },
+      { label: "Tal med Carsten om muligheder", value: "kontakt" },
+      { label: "Tilbage til hovedmenu", value: "tilbage" }
+    ], (valg) => {
+      if (valg === "ny") {
+        startCalculatorFlow(); // Start flowet forfra
+      } else if (valg === "kontakt") {
+        addMessage('bot', "Super! Jeg sætter dig straks i kontakt med Carsten. 👋");
+        if (typeof flows.kontakt?.start === 'function') {
+          activeFlow = "kontakt";
+          flows.kontakt.start();
+        }
+      } else {
+        addMessage('bot', "Du kan vælge et nyt emne nedenfor eller stille et nyt spørgsmål. Jeg er klar til at hjælpe videre!");
+        showTopicButtons();
+      }
+      resolve();
+    });
+  });
 }
+
 
 
 

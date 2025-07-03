@@ -206,3 +206,8 @@ body, html {
 .result-card b {
   color: #c99800;
 }
+
+.result-card:hover {
+  box-shadow: 0 6px 28px rgba(246,205,91,0.22);
+}
+
