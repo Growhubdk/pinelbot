@@ -93,7 +93,7 @@ body, html {
   fill: black;
 }
 
-.topic-button, .option-button {
+.option-button {
   background-color: #F5F4F2;
   border: none;
   padding: 10px 14px;
@@ -103,9 +103,27 @@ body, html {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+.topic-button {
+  background: linear-gradient(90deg, #ffe070 0%, #ffd84d 100%);
+  color: #3d3400;
+  border: none;
+  padding: 11px 18px;
+  margin: 5px 7px 5px 0;
+  border-radius: 13px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 212, 70, 0.12);
+  transition: background 0.25s, box-shadow 0.22s;
+}
 
-.topic-button:hover, .option-button:hover {
+.option-button:hover {
   background-color: #eae9e7;
+}
+
+.topic-button:hover {
+  background: linear-gradient(90deg, #ffe07f 0%, #ffdb63 100%);
+  box-shadow: 0 4px 16px rgba(255, 212, 70, 0.21);
 }
 
 .option-container {
@@ -183,11 +201,12 @@ body, html {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   z-index: 1000;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
 #scrollTopBtn:hover {
   background-color: #ffdc58;
+  transform: scale(1.10);
 }
 
 .result-card {
@@ -210,4 +229,61 @@ body, html {
 .result-card:hover {
   box-shadow: 0 6px 28px rgba(246,205,91,0.22);
 }
+
+/* --- Mobil: Mindre padding på kort og chat --- */
+@media (max-width: 600px) {
+  .chat-window {
+    padding: 10px;
+    gap: 8px;
+  }
+  .result-card {
+    padding: 14px 10px;
+    font-size: 1em;
+  }
+}
+
+/* --- Lidt mere luft under inputfeltet --- */
+.input-wrapper {
+  border-top: 1px solid #ddd;
+  background: #fff;
+  padding-bottom: 4px;
+}
+
+/* --- Klik-effekt på knapper --- */
+.topic-button:active,
+.option-button:active {
+  background-color: #ece8d9;
+}
+
+/* --- Diskret scrollbar til chatten --- */
+.chat-window::-webkit-scrollbar {
+  width: 6px;
+  background: #f5f4f2;
+}
+.chat-window::-webkit-scrollbar-thumb {
+  background: #ece8d9;
+  border-radius: 6px;
+}
+
+/* --- Centerer result-card på mobil og gør den aldrig for bred --- */
+.result-card {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* --- Mikrotransition på knapper for mere “klik-fornemmelse” --- */
+.topic-button,
+.option-button,
+#send-button,
+#sticky-reset {
+  transition: background 0.2s, box-shadow 0.2s, transform 0.08s;
+}
+.topic-button:active,
+.option-button:active,
+#send-button:active {
+  transform: scale(0.98);
+}
+
 

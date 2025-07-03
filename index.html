@@ -30,32 +30,6 @@
   <script src="chatbot.js"></script>
   <script src="botLogic.js"></script>
 
-  <script>
-    // Send-knap
-    document.getElementById("send-button").addEventListener("click", () => {
-      const input = document.getElementById("user-input");
-      const message = input.value.trim();
-      if (message !== "") {
-        handleUserMessage(message);
-        input.value = "";
-      }
-    });
-
-    // Scroll-to-top-knap funktion
-    const scrollTopBtn = document.getElementById("scrollTopBtn");
-
-    window.addEventListener("scroll", () => {
-      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-        scrollTopBtn.style.display = "block";
-      } else {
-        scrollTopBtn.style.display = "none";
-      }
-    });
-
-    scrollTopBtn.addEventListener("click", () => {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    });
-  </script>
+  
 </body>
 </html>

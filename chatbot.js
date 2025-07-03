@@ -1,8 +1,14 @@
 const inputField = document.getElementById('user-input');
 const messagesDiv = document.getElementById('messages');
+const chatWindow = messagesDiv;
+const scrollTopBtn = document.getElementById("scrollTopBtn"); // <-- kun én gang her!
 const sendButton = document.getElementById('send-button');
 let userMessageCount = 0;
 let topicChosen = false;
+
+function focusInput() {
+  setTimeout(() => inputField.focus(), 100);
+}
 
 // Global ventefunktion til brugerinput
 let awaitingUserInputCallback = null;
@@ -59,8 +65,9 @@ function waitForUserChoice(promptText, options) {
       wrapper.appendChild(btn);
     });
 
-    messagesDiv.appendChild(wrapper);
+    messagesDiv.appendChild(msg);
     scrollToBottom();
+    focusInput();
   });
 }
 
@@ -69,10 +76,10 @@ function addMessage(sender, text) {
 
   if (sender === 'bot') {
     const wrapper = document.createElement('div');
-    wrapper.className = 'bot-wrapper'; // ny wrapper til layout
+    wrapper.className = 'bot-wrapper';
 
     const logo = document.createElement('img');
-    logo.src = 'pinelchatbot.png'; // sørg for at den ligger i projektets rod
+    logo.src = 'pinelchatbot.png';
     logo.alt = 'PinelBot';
     logo.className = 'bot-logo';
 
@@ -88,10 +95,11 @@ function addMessage(sender, text) {
     msg.innerHTML = text;
   }
 
-  messagesDiv.appendChild(msg);
+  messagesDiv.appendChild(wrapper);
   scrollToBottom();
-}
+  focusInput();
 
+}
 
 function showTypingIndicator() {
   const typing = document.createElement('div');
@@ -110,7 +118,6 @@ function showTypingIndicator() {
   messagesDiv.appendChild(typing);
   scrollToBottom();
 }
-
 
 function removeTypingIndicator() {
   const typing = document.getElementById('typing-indicator');
@@ -131,13 +138,12 @@ function resetTopicFlow() {
 
 function showTopicButtons() {
   const topics = [
-  { label: '📈 Beregn besparelse', prompt: 'Jeg vil beregne, hvad jeg kan spare' },
-  { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
-  { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
-  { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
-  { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' }
-];
-
+    { label: '📈 Beregn besparelse', prompt: 'Jeg vil beregne, hvad jeg kan spare' },
+    { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
+    { label: '🤖 Automatisering', prompt: 'Jeg vil gerne automatisere noget' },
+    { label: '🧪 AI-parathed', prompt: 'Lad os tage AI-paratheds-testen' },
+    { label: '📞 Kontakt', prompt: 'Jeg vil gerne kontaktes' }
+  ];
 
   const wrapper = document.createElement('div');
   wrapper.id = 'topic-buttons';
@@ -165,7 +171,7 @@ function showTopicButtons() {
 
 async function handleSimulatedUserInput(text) {
   if (typeof handleBotLogic === 'function') {
-    const handled = await handleBotLogic(text); // <--- Nu med await!
+    const handled = await handleBotLogic(text);
     if (handled) return;
   }
 
@@ -194,7 +200,7 @@ window.onload = () => {
 
   const raw = localStorage.getItem("activeFlow");
   if (!raw) {
-    addMessage('bot', 'Hej 👋 Jeg er PinelBot – din jordnære AI-rådgiver. Hvad vil du gerne vide mere om?');
+    addMessage('bot', "Hej og velkommen til PinelBot 👋\nJeg er din hjælper, når det gælder AI, automatisering og smarte løsninger i din virksomhed. Hvad er du mest nysgerrig på i dag?");
     showTopicButtons();
     scrollToBottom();
   }
@@ -210,15 +216,13 @@ async function handleUserInput() {
   if (!topicChosen) topicChosen = true;
 
   if (awaitingUserInputCallback && activeFlow && flows[activeFlow]) {
-  flows[activeFlow].state.awaiting = false;
-}
+    flows[activeFlow].state.awaiting = false;
+  }
 
-if (onUserInput(userText)) return;
+  if (onUserInput(userText)) return;
 
   if (typeof handleBotLogic === 'function') {
     const handled = await handleBotLogic(userText);
-      if (handled) return;
-
     if (handled) return;
   }
 
@@ -234,7 +238,7 @@ if (onUserInput(userText)) return;
     const data = await response.json();
     removeTypingIndicator();
     addMessage('bot', data.reply);
-    
+
   } catch (error) {
     removeTypingIndicator();
     addMessage('bot', "Beklager, noget gik galt. Prøv igen senere.");
@@ -272,3 +276,20 @@ function showOptions(options, callback) {
   messagesDiv.appendChild(wrapper);
   scrollToBottom();
 }
+
+// --- SCROLL TO TOP-FUNKTIONALITET ---
+// Nu kun én gang!
+messagesDiv.addEventListener("scroll", () => {
+  if (messagesDiv.scrollTop > 300) {
+    scrollTopBtn.style.display = "block";
+  } else {
+    scrollTopBtn.style.display = "none";
+  }
+});
+
+scrollTopBtn.addEventListener("click", () => {
+  messagesDiv.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
