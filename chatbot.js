@@ -16,8 +16,6 @@ let awaitingUserInputCallback = null;
 function waitForUserInput(callback) {
   console.log("🟡 Bot venter på brugerinput...");
   awaitingUserInputCallback = callback;
-
-  // ✅ Sørg for at brugeren kan skrive
   inputField.disabled = false;
   sendButton.disabled = false;
   inputField.placeholder = "Skriv din besked her...";
@@ -65,7 +63,7 @@ function waitForUserChoice(promptText, options) {
       wrapper.appendChild(btn);
     });
 
-    messagesDiv.appendChild(msg);
+    messagesDiv.appendChild(wrapper);  // <-- RIGTIG HER!
     scrollToBottom();
     focusInput();
   });
@@ -95,10 +93,9 @@ function addMessage(sender, text) {
     msg.innerHTML = text;
   }
 
-  messagesDiv.appendChild(wrapper);
+  messagesDiv.appendChild(msg); // <-- RIGTIG HER!
   scrollToBottom();
   focusInput();
-
 }
 
 function showTypingIndicator() {
@@ -278,7 +275,6 @@ function showOptions(options, callback) {
 }
 
 // --- SCROLL TO TOP-FUNKTIONALITET ---
-// Nu kun én gang!
 messagesDiv.addEventListener("scroll", () => {
   if (messagesDiv.scrollTop > 300) {
     scrollTopBtn.style.display = "block";
