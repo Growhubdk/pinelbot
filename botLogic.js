@@ -567,7 +567,9 @@ function showResumeButtons() {
   yesBtn.onclick = () => {
     wrapper.remove();
     const flow = flows[activeFlow];
-    if (flow) flow.handle("");
+    // Brug næste-step logik!
+    if (flow && typeof flow.next === 'function') flow.next();
+    else if (flow) flow.handle("");
   };
 
   const noBtn = document.createElement('button');
@@ -586,5 +588,6 @@ function showResumeButtons() {
   wrapper.appendChild(noBtn);
   document.getElementById('messages').appendChild(wrapper);
 }
+
 
 
