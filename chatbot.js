@@ -93,9 +93,14 @@ function addMessage(sender, text) {
     msg.innerHTML = text;
   }
 
-  messagesDiv.appendChild(msg); // <-- RIGTIG HER!
+    messagesDiv.appendChild(msg); // <-- RIGTIG HER!
   scrollToBottom();
   focusInput();
+
+  // GEM BESKEDEN I localStorage
+  const chatHistory = JSON.parse(localStorage.getItem('pinelChatHistory') || '[]');
+  chatHistory.push({ sender, text });
+  localStorage.setItem('pinelChatHistory', JSON.stringify(chatHistory));
 }
 
 function showTypingIndicator() {
@@ -134,6 +139,7 @@ function resetTopicFlow() {
 }
 
 function showTopicButtons() {
+  localStorage.removeItem('pinelChatHistory');
   const topics = [
     { label: '📈 Beregn besparelse', prompt: 'Jeg vil beregne, hvad jeg kan spare' },
     { label: '📊 Rådgivning', prompt: 'Jeg vil gerne have rådgivning' },
@@ -204,13 +210,17 @@ window.onload = () => {
     loadFlowState();
   }
 
-  const raw = localStorage.getItem("activeFlow");
-  if (!raw) {
+  // Indlæs chat-historik fra localStorage
+  const chatHistory = JSON.parse(localStorage.getItem('pinelChatHistory') || '[]');
+  if (chatHistory.length > 0) {
+    chatHistory.forEach(msg => addMessage(msg.sender, msg.text));
+  } else {
     addMessage('bot', "Hej og velkommen til PinelBot 👋\nJeg er din hjælper, når det gælder AI, automatisering og smarte løsninger i din virksomhed. Hvad er du mest nysgerrig på i dag?");
     showTopicButtons();
     scrollToBottom();
   }
 };
+
 
 async function handleUserInput() {
   const userText = inputField.value.trim();
