@@ -411,28 +411,33 @@ async function startCalculatorFlow() {
   );
 
   // 4. Inviter brugeren videre – uden at lukke samtalen ned
-  await new Promise((resolve) => {
-    showOptions([
-      { label: "Prøv med en anden opgave", value: "ny" },
-      { label: "Tal med Carsten om muligheder", value: "kontakt" },
-      { label: "Tilbage til hovedmenu", value: "tilbage" }
-    ], (valg) => {
-      if (valg === "ny") {
-        startCalculatorFlow(); // Start flowet forfra
-      } else if (valg === "kontakt") {
-        addMessage('bot', "Super! Jeg sætter dig straks i kontakt med Carsten. 👋");
-        if (typeof flows.kontakt?.start === 'function') {
-          activeFlow = "kontakt";
-          flows.kontakt.start();
-        }
-      } else {
-        addMessage('bot', "Du kan vælge et nyt emne nedenfor eller stille et nyt spørgsmål. Jeg er klar til at hjælpe videre!");
-        showFeedback();
-        showTopicButtons();
-      }
+await new Promise((resolve) => {
+  showOptions([
+    { label: "Prøv med en anden opgave", value: "ny" },
+    { label: "Tal med Carsten om muligheder", value: "kontakt" },
+    { label: "Tilbage til hovedmenu", value: "tilbage" }
+  ], (valg) => {
+    if (valg === "ny") {
+      showFeedback();           // <-- VIS FEEDBACK FØR NYT BEREGNING
+      startCalculatorFlow();    // Start flowet forfra
       resolve();
-    });
+    } else if (valg === "kontakt") {
+      addMessage('bot', "Super! Jeg sætter dig straks i kontakt med Carsten. 👋");
+      if (typeof flows.kontakt?.start === 'function') {
+        activeFlow = "kontakt";
+        flows.kontakt.start();
+      }
+      showFeedback();           // <-- VIS FEEDBACK
+      resolve();
+    } else {
+      addMessage('bot', "Du kan vælge et nyt emne nedenfor eller stille et nyt spørgsmål. Jeg er klar til at hjælpe videre!");
+      showFeedback();           // <-- VIS FEEDBACK
+      showTopicButtons();
+      resolve();
+    }
   });
+});
+
 }
 
 
