@@ -206,9 +206,6 @@ async function handleSimulatedUserInput(text) {
 }
 
 window.onload = () => {
-  if (typeof loadFlowState === 'function') {
-    loadFlowState();
-  }
 
   // Hent det rå gemte flow-objekt som tekst
   const savedFlowRaw = localStorage.getItem('activeFlow');
