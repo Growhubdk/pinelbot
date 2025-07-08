@@ -43,8 +43,10 @@ const flows = {
       persistFlowState(this);
 
       if (this.progress === 2) {
+  addMessage('bot', "Spørgsmål 2 af 3:");
   addMessage('bot', "👉 Har I arbejdsgange, der gentager sig og kunne automatiseres? (ja/nej)");
 } else if (this.progress === 3) {
+  addMessage('bot', "Spørgsmål 3 af 3:");
   addMessage('bot', "👉 Er I åbne for at afprøve nye digitale værktøjer? (ja/nej)");
 } else {
   const score = this.answers.filter(a => a === 'ja').length;
@@ -205,10 +207,12 @@ const flows = {
       persistFlowState(this);
 
       if (this.progress === 2) {
-        addMessage('bot', "👉 Bruger I tid på manuelt at trække rapporter, KPI'er eller status? (ja/nej)");
-      } else if (this.progress === 3) {
-        addMessage('bot', "👉 Kunne I tænke jer et simpelt visuelt overblik fx hver uge? (ja/nej)");
-      } else {
+  addMessage('bot', "Spørgsmål 2 af 3:");
+  addMessage('bot', "👉 Bruger I tid på manuelt at trække rapporter, KPI'er eller status? (ja/nej)");
+} else if (this.progress === 3) {
+  addMessage('bot', "Spørgsmål 3 af 3:");
+  addMessage('bot', "👉 Kunne I tænke jer et simpelt visuelt overblik fx hver uge? (ja/nej)");
+} else {
         const score = this.answers.filter(a => a === 'ja').length;
         let result = score === 3
           ? "📈 AI kan automatisere jeres datarapporter og dashboards."
@@ -391,11 +395,33 @@ async function startCalculatorFlow() {
   addMessage('bot', "Lad os regne på det 📊 Jeg stiller dig nogle hurtige spørgsmål.");
 
   // 1. Hent svar fra brugeren
-  const task = await waitForUserText("1️⃣ Hvilken opgave vil du gerne spare tid på?");
-  const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen udfører du denne opgave?"));
-  const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det hver gang?"));
-  const role = await waitForUserChoice("4️⃣ Hvem laver opgaven oftest?", ["Mig selv", "En kollega", "En ekstern"]);
-  const value = await waitForUserChoice("5️⃣ Hvad vil det vigtigste resultat være for dig?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
+  addMessage('bot', "Spørgsmål 1 af 5:");
+const task = await waitForUserText("1️⃣ Hvilken opgave vil du gerne spare tid på?");
+  addMessage('bot', "Spørgsmål 2 af 5:");
+const frequency = parseInt(await waitForUserText("2️⃣ Hvor mange gange om ugen udfører du denne opgave?"));
+
+addMessage('bot', "Spørgsmål 3 af 5:");
+const duration = parseInt(await waitForUserText("3️⃣ Hvor mange minutter tager det hver gang?"));
+
+  addMessage('bot', "Spørgsmål 4 af 5:");
+const role = await waitForUserChoice("4️⃣ Hvem laver opgaven oftest?", ["Mig selv", "En kollega", "En ekstern"]);
+
+  addMessage('bot', "Spørgsmål 5 af 5:");
+const value = await waitForUserChoice("5️⃣ Hvad vil det vigtigste resultat være for dig?", ["Spare tid", "Undgå fejl", "Få overblik", "Noget andet"]);
+
+// === Gem beregningssvar i Airtable ===
+fetch('/api/beregning', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    task,
+    frequency,
+    duration,
+    role,
+    value,
+    date: new Date().toISOString()
+  })
+});
 
   // 2. Beregn
   const hourlyRate = role === "Mig selv" ? 600 : role === "En kollega" ? 400 : 700;
