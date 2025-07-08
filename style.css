@@ -147,7 +147,7 @@ body, html {
   background: #ffe070;
   color: #3d3400;
   border: none;
-  border-radius: 50%;
+  border-radius: 50px;
   box-shadow: 0 2px 12px rgba(255, 212, 70, 0.14);
   display: flex;
   align-items: center;
@@ -156,51 +156,45 @@ body, html {
   font-weight: 700;
   cursor: pointer;
   z-index: 1200;
-  transition: width 0.25s cubic-bezier(.68,-0.55,.27,1.55), background 0.19s, border-radius 0.25s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.19s;
+  transition: width 0.23s cubic-bezier(.68,-0.55,.27,1.55), background 0.19s, padding 0.23s;
   overflow: hidden;
   outline: none;
-  padding: 0;
-  gap: 0; /* Reset gap for initial state */
+  padding-left: 0; /* <--- default */
 }
 
 #sticky-reset svg {
   display: block;
-  margin: auto;
-  transition: margin-left 0.25s cubic-bezier(.68,-0.55,.27,1.55);
+  margin: 0;
+  transition: margin 0.2s;
 }
 
 #sticky-reset span {
   display: none;
   white-space: nowrap;
-  font-size: 15px;
+  margin-left: 18px;
+  margin-right: 18px;
+  font-size: 1.13em;
   font-weight: 600;
   color: #3d3400;
-  margin-left: 0;
-  padding-left: 0;
-  transition: margin-left 0.25s cubic-bezier(.68,-0.55,.27,1.55), padding-left 0.25s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 #sticky-reset:hover,
 #sticky-reset:focus {
-  width: 155px;
-  border-radius: 32px 32px 32px 32px / 48px 48px 48px 48px;
+  width: 168px;
   background: #ffe792;
   justify-content: flex-start;
   box-shadow: 0 4px 18px rgba(255, 212, 70, 0.19);
-  padding-left: 12px;    /* Giver luft i venstre side */
-  gap: 9px;              /* Luft mellem ikon og tekst */
+  padding-left: 14px;        /* <--- NYT: luft til venstre */
 }
 
 #sticky-reset:hover svg,
 #sticky-reset:focus svg {
-  margin-left: 0;        /* Holder ikonet lidt fra venstre */
+  margin-left: 0;
 }
 
 #sticky-reset:hover span,
 #sticky-reset:focus span {
   display: inline;
-  margin-left: 5px;
-  padding-left: 2px;
 }
 
 @media (max-width: 600px) {
@@ -213,11 +207,13 @@ body, html {
   }
   #sticky-reset:hover,
   #sticky-reset:focus {
-    width: 120px;
-    padding-left: 6px;
+    width: 135px;
+    padding-left: 9px;
   }
   #sticky-reset span {
-    font-size: 13.5px;
+    font-size: 14px;
+    margin-left: 11px;
+    margin-right: 7px;
   }
 }
 
