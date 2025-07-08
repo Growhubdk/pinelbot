@@ -210,7 +210,39 @@ window.onload = () => {
     loadFlowState();
   }
 
-  // Indlæs chat-historik fra localStorage
+  // Hent det rå gemte flow-objekt som tekst
+  const savedFlowRaw = localStorage.getItem('activeFlow');
+  if (savedFlowRaw) {
+    // Parse JSON-strengen for at få objektet
+    const savedFlow = JSON.parse(savedFlowRaw);
+    const flowName = savedFlow.name;  // Hent flow-navnet
+
+    addMessage('bot', `📌 Du havde et flow i gang sidst: *${flowName}*. Vil du fortsætte, hvor du slap?`);
+    showOptions([
+      { label: '✅ Ja tak', value: 'fortsæt' },
+      { label: '🔄 Nej, start forfra', value: 'nyt' }
+    ], (valg) => {
+      if (valg === 'fortsæt') {
+        activeFlow = flowName;
+        if (typeof flows[activeFlow]?.resume === 'function') {
+          flows[activeFlow].resume();
+        } else if (typeof flows[activeFlow]?.start === 'function') {
+          flows[activeFlow].start();
+        }
+      } else {
+        localStorage.removeItem('activeFlow');
+        localStorage.removeItem('flowState');
+        localStorage.removeItem('pinelChatHistory');
+        activeFlow = null;
+        messagesDiv.innerHTML = '';
+
+        addMessage('bot', "Okay, vi starter forfra. Hvad vil du gerne høre om i dag?");
+        showTopicButtons();
+      }
+    });
+    return;
+  }
+
   const chatHistory = JSON.parse(localStorage.getItem('pinelChatHistory') || '[]');
   if (chatHistory.length > 0) {
     chatHistory.forEach(msg => addMessage(msg.sender, msg.text));
@@ -220,6 +252,7 @@ window.onload = () => {
     scrollToBottom();
   }
 };
+
 
 
 async function handleUserInput() {
