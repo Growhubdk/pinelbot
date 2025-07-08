@@ -446,6 +446,48 @@ fetch('/api/beregning', {
     </div>`
   );
 
+  // --- SPØRG OM MAIL ---
+await new Promise((resolve) => {
+  addMessage('bot', "Vil du have din beregning tilsendt på e-mail?");
+  showOptions([
+    { label: "✅ Ja tak", value: "ja" },
+    { label: "Nej tak", value: "nej" }
+  ], async (valg) => {
+    if (valg === "ja") {
+      const email = await waitForUserText("Skriv din e-mail her:");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        addMessage('bot', "Det ligner ikke en gyldig e-mailadresse. Prøv igen:");
+        resolve();
+        return;
+      }
+      // Send HELE beregningen til backend
+      fetch('/api/beregning', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          task,
+          frequency,
+          duration,
+          role,
+          value,
+          date: new Date().toISOString(),
+          email,
+          sendMail: true,
+          monthlyHours: monthlyHours.toFixed(1),
+          monthlyCost,
+          yearlyCost
+        })
+      });
+      addMessage('bot', "✔️ Din beregning er sendt til din e-mail. Tjek evt. din spam-mappe.");
+      resolve();
+    } else {
+      addMessage('bot', "Intet problem! Du kan altid kopiere beregningen herfra.");
+      resolve();
+    }
+  });
+});
+
+
   // 4. Inviter brugeren videre – uden at lukke samtalen ned
 await new Promise((resolve) => {
   showOptions([
