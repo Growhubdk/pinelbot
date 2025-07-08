@@ -147,7 +147,7 @@ body, html {
   background: #ffe070;
   color: #3d3400;
   border: none;
-  border-radius: 32px;   /* <-- ikke 50%, men 'pill' form */
+  border-radius: 50%;
   box-shadow: 0 2px 12px rgba(255, 212, 70, 0.14);
   display: flex;
   align-items: center;
@@ -156,37 +156,51 @@ body, html {
   font-weight: 700;
   cursor: pointer;
   z-index: 1200;
-  transition: width 0.25s cubic-bezier(.68,-0.55,.27,1.55), background 0.19s;
+  transition: width 0.25s cubic-bezier(.68,-0.55,.27,1.55), background 0.19s, border-radius 0.25s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.19s;
   overflow: hidden;
   outline: none;
-  padding: 0 18px 0 0;  /* lidt ekstra plads til teksten */
+  padding: 0;
+  gap: 0; /* Reset gap for initial state */
 }
 
 #sticky-reset svg {
   display: block;
+  margin: auto;
+  transition: margin-left 0.25s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 #sticky-reset span {
   display: none;
   white-space: nowrap;
-  margin-left: 15px;
   font-size: 15px;
   font-weight: 600;
   color: #3d3400;
+  margin-left: 0;
+  padding-left: 0;
+  transition: margin-left 0.25s cubic-bezier(.68,-0.55,.27,1.55), padding-left 0.25s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 #sticky-reset:hover,
 #sticky-reset:focus {
-  width: 140px;
+  width: 155px;
+  border-radius: 32px 32px 32px 32px / 48px 48px 48px 48px;
   background: #ffe792;
   justify-content: flex-start;
   box-shadow: 0 4px 18px rgba(255, 212, 70, 0.19);
-  border-radius: 32px;  /* Bliver ved pill-form */
+  padding-left: 12px;    /* Giver luft i venstre side */
+  gap: 9px;              /* Luft mellem ikon og tekst */
+}
+
+#sticky-reset:hover svg,
+#sticky-reset:focus svg {
+  margin-left: 0;        /* Holder ikonet lidt fra venstre */
 }
 
 #sticky-reset:hover span,
 #sticky-reset:focus span {
   display: inline;
+  margin-left: 5px;
+  padding-left: 2px;
 }
 
 @media (max-width: 600px) {
@@ -196,17 +210,14 @@ body, html {
     font-size: 22px;
     bottom: 75px;
     right: 8px;
-    border-radius: 22px;
   }
   #sticky-reset:hover,
   #sticky-reset:focus {
-    width: 115px;
-    padding-left: 8px;
-    border-radius: 22px;
+    width: 120px;
+    padding-left: 6px;
   }
   #sticky-reset span {
     font-size: 13.5px;
-    margin-left: 8px;
   }
 }
 
