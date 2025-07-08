@@ -41,7 +41,7 @@ export default async function handler(req, res) {
               ...(email ? { Email: email } : {}),
               ...(monthlyCost ? { "Månedlig omkostning": monthlyCost } : {}),
               ...(yearlyCost ? { "Årlig omkostning": yearlyCost } : {}),
-              ...(monthlyHours ? { "Timer pr måned": monthlyHours } : {})
+              ...(monthlyHours ? { "Timer pr måned": Number(monthlyHours) } : {})
             }
           }
         ]
