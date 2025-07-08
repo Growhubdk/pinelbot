@@ -140,15 +140,15 @@ body, html {
 
 #sticky-reset {
   position: fixed;
-  bottom: 110px; /* lidt tættere på inputfeltet */
-  right: 20px;
-  width: 52px;
-  height: 52px;
-  background: #FFE070;
+  bottom: 90px;
+  right: 18px;
+  width: 48px;
+  height: 48px;
+  background: #ffe070;
   color: #3d3400;
   border: none;
   border-radius: 50%;
-  box-shadow: 0 2px 12px rgba(255, 212, 70, 0.15);
+  box-shadow: 0 2px 12px rgba(255, 212, 70, 0.14);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,47 +156,54 @@ body, html {
   font-weight: 700;
   cursor: pointer;
   z-index: 1200;
-  transition: background 0.21s, box-shadow 0.21s, width 0.25s;
+  transition: width 0.25s cubic-bezier(.68,-0.55,.27,1.55), background 0.19s;
   overflow: hidden;
+  outline: none;
   padding: 0;
+}
+
+#sticky-reset svg {
+  display: block;
 }
 
 #sticky-reset span {
   display: none;
+  white-space: nowrap;
+  margin-left: 15px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #3d3400;
 }
 
 #sticky-reset:hover,
 #sticky-reset:focus {
-  background: #ffd54d;
-  width: 165px;
+  width: 140px;
+  background: #ffe792;
   justify-content: flex-start;
-  padding-left: 20px;
+  box-shadow: 0 4px 18px rgba(255, 212, 70, 0.19);
 }
 
 #sticky-reset:hover span,
 #sticky-reset:focus span {
   display: inline;
-  margin-left: 12px;
-  font-size: 16px;
-  font-weight: 600;
 }
 
 @media (max-width: 600px) {
   #sticky-reset {
-    bottom: 90px;
-    right: 12px;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     font-size: 22px;
+    bottom: 75px;
+    right: 8px;
   }
   #sticky-reset:hover,
   #sticky-reset:focus {
-    width: 135px;
-    padding-left: 14px;
+    width: 115px;
+    padding-left: 8px;
   }
-  #sticky-reset:hover span,
-  #sticky-reset:focus span {
-    font-size: 15px;
+  #sticky-reset span {
+    font-size: 13.5px;
+    margin-left: 8px;
   }
 }
 
