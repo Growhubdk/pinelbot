@@ -55,6 +55,7 @@ const flows = {
           : "🧭 En snak kunne være godt for at komme i gang.";
         addMessage('bot', `Tak for dine svar 🙌 ${result} Vil du have et konkret forslag baseret på dine svar?`);
         if (typeof addContactButton === 'function') addContactButton();
+        showFeedback();
         this.reset();
       }
       return true;
@@ -104,7 +105,9 @@ const flows = {
           : "📌 Det lyder ikke som et akut behov lige nu.";
         addMessage('bot', `${result} Skal jeg vise et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
+        showFeedback();
         this.reset();
+
       }
       return true;
     },
@@ -153,7 +156,9 @@ const flows = {
           : "🧭 Vi kan tage en snak og finde en god indgang.";
         addMessage('bot', `${result} Vil du se et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
+        showFeedback();
         this.reset();
+
       }
       return true;
     },
@@ -202,7 +207,9 @@ const flows = {
           : "🧭 Det lyder ikke som et behov lige nu – måske senere.";
         addMessage('bot', `${result} Skal jeg vise et eksempel?`);
         if (typeof addContactButton === 'function') addContactButton();
+        showFeedback();
         this.reset();
+
       }
       return true;
     },
@@ -327,6 +334,7 @@ const flows = {
   .then(txt => {
     console.log("✅ Webhook response:", txt);
     addMessage('bot', `Tak for din besked, ${this.answers.name} 😊\nJeg har givet den videre til Carsten hos Pinel – han tager den derfra.\n\nDu hører fra os på mail snarest muligt.\n\nBedste hilsner\nPinelbotten 🤖`);
+    showFeedback();
     clearFlowState();
     showTopicButtons();
     this.reset();
@@ -419,6 +427,7 @@ async function startCalculatorFlow() {
         }
       } else {
         addMessage('bot', "Du kan vælge et nyt emne nedenfor eller stille et nyt spørgsmål. Jeg er klar til at hjælpe videre!");
+        showFeedback();
         showTopicButtons();
       }
       resolve();

@@ -274,6 +274,41 @@ function showOptions(options, callback) {
   scrollToBottom();
 }
 
+// --- FEEDBACK-KNAPPER --- //
+function showFeedback() {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'option-container';
+  
+  const prompt = document.createElement('div');
+  prompt.style.marginBottom = "6px";
+  prompt.style.fontSize = "15px";
+  prompt.innerText = "Fik du det, du kom for?";
+  wrapper.appendChild(prompt);
+
+  [
+    {label: "👍 Ja", value: "ja"},
+    {label: "👎 Nej", value: "nej"}
+  ].forEach(opt => {
+    const btn = document.createElement('button');
+    btn.innerText = opt.label;
+    btn.className = 'option-button';
+    btn.onclick = () => {
+      wrapper.remove();
+      if (opt.value === "nej") {
+        addMessage('bot', "Skriv gerne herunder, hvad du manglede eller havde håbet på – så bliver jeg klogere!");
+      } else {
+        addMessage('bot', "Tak for din feedback! 🙏 Du kan altid starte et nyt emne eller kontakte Carsten.");
+        if (typeof showTopicButtons === "function") showTopicButtons();
+      }
+    };
+    wrapper.appendChild(btn);
+  });
+
+  messagesDiv.appendChild(wrapper);
+  scrollToBottom();
+}
+
+
 // --- SCROLL TO TOP-FUNKTIONALITET ---
 messagesDiv.addEventListener("scroll", () => {
   if (messagesDiv.scrollTop > 300) {
