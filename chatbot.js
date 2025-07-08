@@ -298,7 +298,7 @@ function showFeedback() {
         addMessage('bot', "Skriv gerne herunder, hvad du manglede eller havde håbet på – så bliver jeg klogere!");
       } else {
         addMessage('bot', "Tak for din feedback! 🙏 Du kan altid starte et nyt emne eller kontakte Carsten.");
-        if (typeof showTopicButtons === "function") showTopicButtons();
+        // Fjernet showTopicButtons!
       }
     };
     wrapper.appendChild(btn);
