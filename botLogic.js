@@ -442,7 +442,6 @@ fetch('/api/beregning', {
       <b>⏰ Tid pr. måned:</b> ${monthlyHours.toFixed(1)} timer<br>
       <b>💸 Omkostning pr. måned:</b> ${monthlyCost.toLocaleString()} kr.<br>
       <b>💰 Omkostning pr. år:</b> ${yearlyCost.toLocaleString()} kr.
-      <br><span style="color:#9b9600; font-size:0.97em;">Tip: Du kan altid kopiere teksten hvis du vil gemme din beregning.</span>
     </div>`
   );
 

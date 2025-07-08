@@ -17,15 +17,11 @@ export default async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  // Træk ALT ud fra body (inkl. e-mail & beregningstal hvis medsendt)
-  const {
-    task, frequency, duration, role, value, date,
-    email, sendMail,
-    monthlyHours, monthlyCost, yearlyCost
-  } = req.body;
+  // Modtag alle data fra klienten
+  const { task, frequency, duration, role, value, date, email, sendMail, monthlyCost, yearlyCost, monthlyHours } = req.body;
 
   try {
-    // 1. Gem i Airtable (udvid med evt. e-mail)
+    // GEM I AIRTABLE
     const response = await fetch('https://api.airtable.com/v0/appxkynJkBfhXFYd4/PinelbotBeregning', {
       method: 'POST',
       headers: {
@@ -45,7 +41,7 @@ export default async function handler(req, res) {
               ...(email ? { Email: email } : {}),
               ...(monthlyCost ? { "Månedlig omkostning": monthlyCost } : {}),
               ...(yearlyCost ? { "Årlig omkostning": yearlyCost } : {}),
-              ...(monthlyHours ? { "Timer pr måned": Number(monthlyHours) } : {})
+              ...(monthlyHours ? { "Timer pr måned": monthlyHours } : {})
             }
           }
         ]
@@ -59,60 +55,79 @@ export default async function handler(req, res) {
       return res.status(500).json({ message: 'Airtable error', error: data });
     }
 
-    // 2. Send notifikationsmail til dig selv (altid!)
+    // --- MAIL TIL BRUGER HVIS EMAIL ER ANGIVET ---
+    if (sendMail && email) {
+      await resend.emails.send({
+        from: 'PinelBot <kontakt@pinel.dk>',
+        to: email,
+        subject: 'Din PinelBot-beregning',
+        html: `
+        <div style="max-width:480px;margin:0 auto;background:#fffbe5;border-radius:13px;padding:28px 24px 16px 24px;font-family:sans-serif;">
+          <img src="https://pinelbot.vercel.app/pinelmail.png" alt="Pinel" style="height:32px; margin-bottom:13px;"/>
+          <h2 style="color:#363100;font-size:23px;margin-bottom:7px;">Din beregning fra PinelBot</h2>
+          <div style="color:#353000;font-size:16px;margin-bottom:13px;">
+            Hej! Her er din beregning:<br>
+          </div>
+          <div style="background:#fffbe5;padding:14px 14px 14px 17px;border-radius:12px;font-size:16px;color:#333;font-weight:500;margin-bottom:13px;box-shadow:0 1px 8px #ffe0703a;">
+            <ul style="list-style:none;padding:0;margin:0 0 0 3px;line-height:1.7;">
+              <li><b>Opgave:</b> ${task}</li>
+              <li><b>Frekvens:</b> ${frequency} gange/uge</li>
+              <li><b>Varighed:</b> ${duration} min/gang</li>
+              <li><b>Rolle:</b> ${role}</li>
+              <li><b>Gevinst:</b> ${value}</li>
+              <li><b>Tid pr. måned:</b> ${monthlyHours} timer</li>
+              <li><b>Omkostning pr. måned:</b> ${monthlyCost?.toLocaleString?.() || monthlyCost} kr.</li>
+              <li><b>Omkostning pr. år:</b> ${yearlyCost?.toLocaleString?.() || yearlyCost} kr.</li>
+            </ul>
+          </div>
+
+          <div style="margin:24px 0 18px 0;text-align:center;">
+            <a href="https://storage.googleapis.com/mailerlite-uploads-prod/1590481/FHi2v0zyYiCUUytEYRdmQBv1tVtFFbG4COU3MRlj.pdf" target="_blank" style="text-decoration:none;">
+              <img src="https://pinelbot.vercel.app/ai-guide-banner.png"
+                alt="Gratis AI-guide til små virksomheder"
+                style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 2px 8px rgba(220,190,67,0.13);margin-bottom:5px;" />
+              <div style="color:#363100;font-size:15px;margin-top:5px;font-weight:600;">Få AI-guiden som PDF</div>
+            </a>
+          </div>
+
+          <div style="margin:18px 0 0 0;font-size:15px;line-height:1.5;color:#5f5907;">
+            Har du spørgsmål, eller vil du høre mere om mulighederne?<br>
+            Svar direkte på denne mail eller <a href="https://pinel.dk" style="color:#d3b301;text-decoration:none;">besøg pinel.dk</a>
+          </div>
+
+          <div style="margin-top:24px;font-size:13px;color:#bab059;">Denne mail er sendt automatisk af PinelBot 🤖</div>
+        </div>
+        `
+      });
+    }
+
+    // --- MAIL TIL DIG (ALTID) ---
     await resend.emails.send({
       from: 'PinelBot <kontakt@pinel.dk>',
       to: 'kontakt@pinel.dk',
       subject: '🧮 Ny beregning fra PinelBot',
       html: `
-        <img src="https://pinelbot.vercel.app/pinelmail.png" alt="Pinel logo" width="120" style="display:block;margin-bottom:16px;">
-        <h2>Ny beregning fra PinelBot</h2>
-        <ul style="font-size:16px;line-height:1.7">
-          <li><strong>Opgave:</strong> ${task}</li>
-          <li><strong>Frekvens:</strong> ${frequency} gange/uge</li>
-          <li><strong>Varighed:</strong> ${duration} min/gang</li>
-          <li><strong>Rolle:</strong> ${role}</li>
-          <li><strong>Gevinst:</strong> ${value}</li>
-          ${monthlyHours ? `<li><strong>Tid pr. måned:</strong> ${monthlyHours} timer</li>` : ""}
-          ${monthlyCost ? `<li><strong>Omkostning pr. måned:</strong> ${monthlyCost.toLocaleString()} kr.</li>` : ""}
-          ${yearlyCost ? `<li><strong>Omkostning pr. år:</strong> ${yearlyCost.toLocaleString()} kr.</li>` : ""}
-          ${email ? `<li><strong>E-mail fra bruger:</strong> ${email}</li>` : ""}
+      <div style="max-width:460px;font-family:sans-serif;background:#f9f7eb;padding:22px 17px 14px 19px;border-radius:11px;">
+        <img src="https://pinelbot.vercel.app/pinelmail.png" alt="Pinel" style="height:24px; margin-bottom:10px;" />
+        <h3 style="margin:0 0 11px 0;font-size:18px;font-weight:600;color:#332e07;">Ny beregning fra PinelBot</h3>
+        <ul style="margin:0 0 5px 2px;padding:0;list-style:none;line-height:1.65;">
+          <li><b>Opgave:</b> ${task}</li>
+          <li><b>Frekvens:</b> ${frequency} gange/uge</li>
+          <li><b>Varighed:</b> ${duration} min/gang</li>
+          <li><b>Rolle:</b> ${role}</li>
+          <li><b>Gevinst:</b> ${value}</li>
+          <li><b>Tid pr. måned:</b> ${monthlyHours} timer</li>
+          <li><b>Omkostning pr. måned:</b> ${monthlyCost?.toLocaleString?.() || monthlyCost} kr.</li>
+          <li><b>Omkostning pr. år:</b> ${yearlyCost?.toLocaleString?.() || yearlyCost} kr.</li>
+          ${email ? `<li><b>Email (kunde):</b> ${email}</li>` : ""}
         </ul>
-        <p><em>Sendt: ${date}</em></p>
+        <div style="margin-top:14px;font-size:13px;color:#aca449;">Sendt: ${date}</div>
+      </div>
       `
     });
 
-    // 3. Hvis kunden har valgt "send til min e-mail", så send branded mail til dem:
-    if (sendMail && email) {
-      await resend.emails.send({
-        from: 'PinelBot <kontakt@pinel.dk>',
-        to: email,
-        subject: 'Din beregning fra PinelBot',
-        html: `
-          <div style="font-family:'Segoe UI',Arial,sans-serif; background:#fffbe5; border-radius:12px; border:1px solid #ffe070; padding:26px 20px; max-width:440px; margin:0 auto;">
-            <img src="https://pinelbot.vercel.app/pinelmail.png" alt="Pinel logo" width="140" style="display:block;margin:0 auto 18px auto;">
-            <h2 style="font-size:21px; color:#3d3400; font-weight:700; margin-bottom:8px;">Din PinelBot-beregning</h2>
-            <p style="font-size:16px; margin-bottom:14px;">Hej! Her er din beregning fra PinelBot 👇</p>
-            <div style="background:#fff7cf; border-radius:8px; border:1px solid #ffe070; padding:18px 14px;">
-              <ul style="font-size:16px;line-height:1.65;padding-left:18px;">
-                <li><strong>Opgave:</strong> ${task}</li>
-                <li><strong>Frekvens:</strong> ${frequency} gange/uge</li>
-                <li><strong>Varighed:</strong> ${duration} min/gang</li>
-                <li><strong>Rolle:</strong> ${role}</li>
-                <li><strong>Gevinst:</strong> ${value}</li>
-                ${monthlyHours ? `<li><strong>Tid pr. måned:</strong> ${monthlyHours} timer</li>` : ""}
-                ${monthlyCost ? `<li><strong>Omkostning pr. måned:</strong> ${Number(monthlyCost).toLocaleString()} kr.</li>` : ""}
-                ${yearlyCost ? `<li><strong>Omkostning pr. år:</strong> ${Number(yearlyCost).toLocaleString()} kr.</li>` : ""}
-              </ul>
-            </div>
-            <p style="font-size:15px; margin:18px 0 0 0;">Har du spørgsmål, eller vil du høre mere om mulighederne?<br>
-            <a href="mailto:kontakt@pinel.dk" style="color:#3d3400; text-decoration:underline;">Skriv til Carsten hos Pinel</a> eller besøg <a href="https://pinel.dk" style="color:#3d3400;text-decoration:underline;">pinel.dk</a></p>
-          </div>
-        `
-      });
-    }
-
-    res.status(200).json({ message: 'Beregning gemt og e-mails sendt', airtableId: data.records[0].id });
+    console.log('✅ Beregning gemt i Airtable og mails sendt');
+    res.status(200).json({ message: 'Beregning gemt og mails sendt', airtableId: data.records[0].id });
   } catch (err) {
     console.error('❌ Server-fejl:', err);
     res.status(500).json({ message: 'Server error', error: err.message });
