@@ -43,21 +43,31 @@ const flows = {
       persistFlowState(this);
 
       if (this.progress === 2) {
-        addMessage('bot', "👉 Har I arbejdsgange, der gentager sig og kunne automatiseres? (ja/nej)");
-      } else if (this.progress === 3) {
-        addMessage('bot', "👉 Er I åbne for at afprøve nye digitale værktøjer? (ja/nej)");
-      } else {
-        const score = this.answers.filter(a => a === 'ja').length;
-        let result = score === 3
-          ? "💪 I virker meget klar til AI!"
-          : score === 2
-          ? "🤔 I har potentiale – måske starte småt."
-          : "🧭 En snak kunne være godt for at komme i gang.";
-        addMessage('bot', `Tak for dine svar 🙌 ${result} Vil du have et konkret forslag baseret på dine svar?`);
-        if (typeof addContactButton === 'function') addContactButton();
-        showFeedback();
-        this.reset();
-      }
+  addMessage('bot', "👉 Har I arbejdsgange, der gentager sig og kunne automatiseres? (ja/nej)");
+} else if (this.progress === 3) {
+  addMessage('bot', "👉 Er I åbne for at afprøve nye digitale værktøjer? (ja/nej)");
+} else {
+  const score = this.answers.filter(a => a === 'ja').length;
+  let result = score === 3
+    ? "💪 I virker meget klar til AI!"
+    : score === 2
+    ? "🤔 I har potentiale – måske starte småt."
+    : "🧭 En snak kunne være godt for at komme i gang.";
+  addMessage('bot', `Tak for dine svar 🙌 ${result}`);
+
+  // Tilføj denne blok for at vise CTA-knap:
+  addMessage('bot', `
+  <div class="result-card" style="background:#fff6d5; text-align:center; margin-top:14px;">
+    <b>Vil du have 30 minutters gratis afklaring på, hvad I kan bruge AI til?</b><br>
+    <button class="cta-knap" onclick="handleSimulatedUserInput('Book gratis afklaring')">Book gratis afklaring</button>
+  </div>
+`);
+
+
+  showFeedback();   // Feedback vises EFTER knappen
+  this.reset();
+}
+
       return true;
     },
     reset() {

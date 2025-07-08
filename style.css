@@ -286,4 +286,18 @@ body, html {
   transform: scale(0.98);
 }
 
+.cta-knap {
+  background: #ffe070;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 20px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.22s;
+}
+.cta-knap:hover {
+  background: #ffd54d;
+}
 

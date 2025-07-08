@@ -167,6 +167,15 @@ function showTopicButtons() {
 }
 
 async function handleSimulatedUserInput(text) {
+  // Fang Book gratis afklaring-knappen først!
+  if (text === 'Book gratis afklaring') {
+    if (typeof flows.kontakt?.start === 'function') {
+      activeFlow = "kontakt";
+      flows.kontakt.start();
+    }
+    return; // Stopper funktionen her
+  }
+
   if (typeof handleBotLogic === 'function') {
     const handled = await handleBotLogic(text);
     if (handled) return;
