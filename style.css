@@ -463,3 +463,27 @@ body, html {
   from { opacity: 0; transform: translateY(16px);}
   to { opacity: 1; transform: translateY(0);}
 }
+
+@media (max-width: 600px) {
+  #chatbox {
+    border-radius: 22px 22px 0 0 !important;
+    overflow: hidden !important;
+    margin-bottom: 9px !important;
+    box-shadow: 0 4px 32px rgba(255, 224, 112, 0.12) !important;
+  }
+  #topic-buttons,
+  .option-container {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+    margin: 10px 0 0 0 !important;
+  }
+  .topic-button,
+  .option-button {
+    width: 100% !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+  }
+}
