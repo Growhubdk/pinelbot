@@ -363,3 +363,103 @@ body, html {
   background: #ffd54d;
 }
 
+/* --- MOBILVENLIG PINELBOT CHAT --- */
+@media (max-width: 600px) {
+
+  .chat-window, #chatbox, #messages {
+    padding: 6px 2px 2px 2px !important;
+    gap: 6px !important;
+    font-size: 15px !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .bubble,
+  .bot-bubble,
+  .user-bubble {
+    font-size: 15px !important;
+    padding: 9px 11px !important;
+    border-radius: 13px !important;
+    max-width: 94vw !important;
+    min-width: 0;
+    margin-bottom: 5px;
+    word-break: break-word;
+    background: #fffdfa;
+    animation: fadeIn 0.34s;
+  }
+
+  .bot-wrapper {
+    gap: 7px !important;
+    margin: 6px 0 !important;
+  }
+
+  .bot-logo {
+    width: 28px !important;
+    height: 28px !important;
+    margin-right: 7px !important;
+  }
+
+  .input-wrapper {
+    background: #fffbe9;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(246,205,91,0.11);
+    margin: 0 2px 7px 2px;
+    padding-bottom: 2px !important;
+    border-top: 1.5px solid #f6cd5b;
+    display: flex;
+    align-items: center;
+  }
+
+  #user-input {
+    font-size: 15px !important;
+    padding: 12px 6px !important;
+    border-radius: 10px 0 0 10px !important;
+    background: #fff !important;
+    border: none !important;
+    flex: 1;
+    box-sizing: border-box;
+  }
+
+  #send-button {
+    padding: 0 12px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 0 10px 10px 0 !important;
+    background: #ffe070 !important;
+    border: none;
+    font-size: 20px !important;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #sticky-reset {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 22px !important;
+    bottom: 75px !important;
+    right: 8px !important;
+    box-shadow: 0 2px 12px rgba(255, 212, 70, 0.16);
+    padding: 0 !important;
+  }
+  #sticky-reset:hover,
+  #sticky-reset:focus {
+    width: 112px !important;
+    padding-left: 7px !important;
+  }
+  #sticky-reset span {
+    font-size: 13.5px !important;
+    margin-left: 8px !important;
+  }
+
+}
+
+/* Fade ind på nye chat-bobler */
+.bubble, .bot-bubble, .user-bubble {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px);}
+  to { opacity: 1; transform: translateY(0);}
+}
