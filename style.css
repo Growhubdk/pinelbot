@@ -6,13 +6,16 @@ body, html {
   background: linear-gradient(to bottom right, #fffefb, #f5f4f2); /* ☀️ varm gradient */
 }
 
-
 #chatbox {
   height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background: white;
+  border-radius: 22px 22px 0 0;
+  overflow: hidden;
+  box-shadow: 0 2px 24px rgba(255, 224, 112, 0.13);
 }
 
 .chat-window {
@@ -59,28 +62,42 @@ body, html {
   margin-top: 2px;
 }
 
-
+/* --- CHAT INPUT FELT --- */
 .input-wrapper {
   display: flex;
-  border-top: 1px solid #ddd;
+  align-items: center;
+  background: #fffbe9; /* let gul tone */
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(246,205,91,0.09);
+  margin: 10px 8px 14px 8px;
+  padding: 3px 3px 3px 8px;
+  border: 1.5px solid #ffe070;
 }
 
 #user-input {
   flex: 1;
-  padding: 14px;
-  font-size: 16px;
+  font-size: 15px;
+  padding: 10px 8px;
   border: none;
   outline: none;
+  border-radius: 11px 0 0 11px;
+  background: transparent;
+  box-sizing: border-box;
+}
+#user-input:focus {
+  background: #fff;
+  outline: 2px solid #ffe070;
 }
 
 #send-button {
-  padding: 0 20px;
-  background-color: #FFE070;
+  background: #ffe070;
+  border-radius: 0 11px 11px 0;
   border: none;
+  min-width: 38px;
+  min-height: 38px;
+  margin-left: 4px;
+  font-size: 20px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 #send-button:hover {
@@ -93,16 +110,14 @@ body, html {
   fill: black;
 }
 
-.option-button {
-  background-color: #F5F4F2;
-  border: none;
-  padding: 10px 14px;
-  margin: 4px;
-  border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+/* --- EMNE-KNAPPER (TOPIC/OPTION) --- */
+.option-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
 }
+
 .topic-button {
   background: linear-gradient(90deg, #ffe070 0%, #ffd84d 100%);
   color: #3d3400;
@@ -115,6 +130,19 @@ body, html {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(255, 212, 70, 0.12);
   transition: background 0.25s, box-shadow 0.22s;
+  text-align: center;
+}
+
+.option-button {
+  background-color: #F5F4F2;
+  border: none;
+  padding: 10px 14px;
+  margin: 4px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: center;
 }
 
 .option-button:hover {
@@ -126,18 +154,12 @@ body, html {
   box-shadow: 0 4px 16px rgba(255, 212, 70, 0.21);
 }
 
-.option-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
 .typing {
   font-style: italic;
   color: #555;
 }
 
+/* --- STICKY RESET KNAP --- */
 #sticky-reset {
   position: fixed;
   bottom: 90px;
@@ -219,7 +241,7 @@ body, html {
   }
 }
 
-/* 🔁 ANIMERET TYPING “...” */
+/* --- ANIMERET TYPING “...” --- */
 .typing-dots span {
   display: inline-block;
   animation: blink 1.4s infinite;
@@ -227,20 +249,19 @@ body, html {
   color: #666;
   margin-right: 2px;
 }
-
 .typing-dots span:nth-child(2) {
   animation-delay: 0.2s;
 }
 .typing-dots span:nth-child(3) {
   animation-delay: 0.4s;
 }
-
 @keyframes blink {
   0% { opacity: 0.2; }
   20% { opacity: 1; }
   100% { opacity: 0.2; }
 }
 
+/* --- BOT-LOGO WRAPPER --- */
 .bot-wrapper {
   display: flex;
   align-items: flex-start;
@@ -248,7 +269,7 @@ body, html {
   margin: 8px 0;
 }
 
-/* ⬆️ SCROLL TO TOP-KNAP */
+/* --- SCROLL TO TOP-KNAP --- */
 #scrollTopBtn {
   position: fixed;
   bottom: 140px;
@@ -271,6 +292,7 @@ body, html {
   transform: scale(1.10);
 }
 
+/* --- RESULTAT-KORT --- */
 .result-card {
   background: #fffbe9;
   border: 1.5px solid #f6cd5b;
@@ -282,72 +304,20 @@ body, html {
   color: #403600;
   font-weight: 500;
   transition: box-shadow 0.2s;
-}
-
-.result-card b {
-  color: #c99800;
-}
-
-.result-card:hover {
-  box-shadow: 0 6px 28px rgba(246,205,91,0.22);
-}
-
-/* --- Mobil: Mindre padding på kort og chat --- */
-@media (max-width: 600px) {
-  .chat-window {
-    padding: 10px;
-    gap: 8px;
-  }
-  .result-card {
-    padding: 14px 10px;
-    font-size: 1em;
-  }
-}
-
-/* --- Lidt mere luft under inputfeltet --- */
-.input-wrapper {
-  border-top: 1px solid #ddd;
-  background: #fff;
-  padding-bottom: 4px;
-}
-
-/* --- Klik-effekt på knapper --- */
-.topic-button:active,
-.option-button:active {
-  background-color: #ece8d9;
-}
-
-/* --- Diskret scrollbar til chatten --- */
-.chat-window::-webkit-scrollbar {
-  width: 6px;
-  background: #f5f4f2;
-}
-.chat-window::-webkit-scrollbar-thumb {
-  background: #ece8d9;
-  border-radius: 6px;
-}
-
-/* --- Centerer result-card på mobil og gør den aldrig for bred --- */
-.result-card {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   max-width: 400px;
 }
 
-/* --- Mikrotransition på knapper for mere “klik-fornemmelse” --- */
-.topic-button,
-.option-button,
-#send-button,
-#sticky-reset {
-  transition: background 0.2s, box-shadow 0.2s, transform 0.08s;
+.result-card b {
+  color: #c99800;
 }
-.topic-button:active,
-.option-button:active,
-#send-button:active {
-  transform: scale(0.98);
+.result-card:hover {
+  box-shadow: 0 6px 28px rgba(246,205,91,0.22);
 }
 
+/* --- CTA KNAP --- */
 .cta-knap {
   background: #ffe070;
   border: none;
@@ -363,18 +333,31 @@ body, html {
   background: #ffd54d;
 }
 
+/* --- FADE IND PÅ NYE CHAT-BOBLER --- */
+.bubble, .bot-bubble, .user-bubble {
+  animation: fadeIn 0.3s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
 /* --- MOBILVENLIG PINELBOT CHAT --- */
 @media (max-width: 600px) {
-
-  .chat-window, #chatbox, #messages {
-    padding: 6px 2px 2px 2px !important;
-    gap: 6px !important;
-    font-size: 15px !important;
-    max-width: 100vw !important;
-    min-width: 0 !important;
-    box-sizing: border-box;
+  #chatbox {
+    height: 100vh;
+    width: 100vw;
+    border-radius: 22px 22px 0 0 !important;
+    overflow: hidden !important;
+    margin-bottom: 9px !important;
+    box-shadow: 0 4px 32px rgba(255, 224, 112, 0.12) !important;
   }
-
+  .chat-window {
+    padding: 10px;
+    gap: 8px;
+    min-height: 65vh;
+    max-height: 86vh;
+  }
   .bubble,
   .bot-bubble,
   .user-bubble {
@@ -388,89 +371,16 @@ body, html {
     background: #fffdfa;
     animation: fadeIn 0.34s;
   }
-
   .bot-wrapper {
     gap: 7px !important;
     margin: 6px 0 !important;
   }
-
   .bot-logo {
     width: 28px !important;
     height: 28px !important;
     margin-right: 7px !important;
   }
-
-  .input-wrapper {
-    background: #fffbe9;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(246,205,91,0.11);
-    margin: 0 2px 7px 2px;
-    padding-bottom: 2px !important;
-    border-top: 1.5px solid #f6cd5b;
-    display: flex;
-    align-items: center;
-  }
-
-  #user-input {
-    font-size: 15px !important;
-    padding: 12px 6px !important;
-    border-radius: 10px 0 0 10px !important;
-    background: #fff !important;
-    border: none !important;
-    flex: 1;
-    box-sizing: border-box;
-  }
-
-  #send-button {
-    padding: 0 12px !important;
-    min-width: 38px !important;
-    min-height: 38px !important;
-    border-radius: 0 10px 10px 0 !important;
-    background: #ffe070 !important;
-    border: none;
-    font-size: 20px !important;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  #sticky-reset {
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 22px !important;
-    bottom: 75px !important;
-    right: 8px !important;
-    box-shadow: 0 2px 12px rgba(255, 212, 70, 0.16);
-    padding: 0 !important;
-  }
-  #sticky-reset:hover,
-  #sticky-reset:focus {
-    width: 112px !important;
-    padding-left: 7px !important;
-  }
-  #sticky-reset span {
-    font-size: 13.5px !important;
-    margin-left: 8px !important;
-  }
-
-}
-
-/* Fade ind på nye chat-bobler */
-.bubble, .bot-bubble, .user-bubble {
-  animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-
-@media (max-width: 600px) {
-  #chatbox {
-    border-radius: 22px 22px 0 0 !important;
-    overflow: hidden !important;
-    margin-bottom: 9px !important;
-    box-shadow: 0 4px 32px rgba(255, 224, 112, 0.12) !important;
-  }
+  /* --- EMNE-KNAPPER: 2-KOLONNE LAYOUT --- */
   #topic-buttons,
   .option-container {
     display: flex !important;
@@ -494,6 +404,26 @@ body, html {
     line-height: 1.1 !important;
     white-space: normal !important;
   }
+  /* --- INPUTFELT --- */
+  .input-wrapper {
+    margin: 7px 3px 7px 3px;
+    border-radius: 11px;
+    padding: 1.5px 2px 1.5px 6px;
+    border: 1.3px solid #ffe070;
+    background: #fffbe9;
+  }
+  #user-input {
+    font-size: 14px !important;
+    padding: 8px 6px !important;
+    border-radius: 9px 0 0 9px !important;
+    background: transparent !important;
+  }
+  #send-button {
+    border-radius: 0 9px 9px 0 !important;
+    min-width: 33px !important;
+    min-height: 33px !important;
+    font-size: 18px !important;
+    margin-left: 3px !important;
+    background: #ffe070 !important;
+  }
 }
-
-
