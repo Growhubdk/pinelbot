@@ -83,10 +83,13 @@ body, html {
   border-radius: 11px 0 0 11px;
   background: transparent;
   box-sizing: border-box;
+  box-shadow: none;
 }
+
 #user-input:focus {
   background: #fff;
-  outline: 2px solid #ffe070;
+  outline: none;
+  box-shadow: 0 0 0 2px #ffe07050; /* svag gul skygge ved fokus */
 }
 
 #send-button {
@@ -426,4 +429,11 @@ body, html {
     margin-left: 3px !important;
     background: #ffe070 !important;
   }
+}
+
+#user-input,
+#user-input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
