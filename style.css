@@ -473,20 +473,27 @@ body, html {
   }
   #topic-buttons,
   .option-container {
-    flex-direction: column !important;
-    gap: 7px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    justify-content: center !important;
     align-items: stretch !important;
-    margin: 9px 0 0 0 !important;
+    margin: 8px 0 0 0 !important;
   }
   .topic-button,
   .option-button {
-    width: 100% !important;
-    margin: 0 !important;
+    width: calc(50% - 7px) !important;
     min-width: 0 !important;
+    margin: 0 !important;
     font-size: 14px !important;
-    padding: 10px 8px !important;
-    box-sizing: border-box !important;
+    padding: 9px 4px !important;
     border-radius: 11px !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
   }
 }
+
 
